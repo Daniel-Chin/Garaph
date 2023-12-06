@@ -5,6 +5,7 @@ using Godot;
 
 public static partial class Shared
 {
+    public class FatalError : Exception { }
     public class AssertionFailed : Exception
     {
         public AssertionFailed(string message) : base(message) { }
@@ -15,7 +16,19 @@ public static partial class Shared
         if (!x)
             throw new AssertionFailed(message);
     }
-    public static readonly Theme THEME = GD.Load<Theme>(
-        "res://main_theme.tres"
-    );
+    public static class Themes
+    {
+        public static readonly Theme MAIN = GD.Load<Theme>(
+            "res://main_theme.tres"
+        );
+        public static readonly Theme STATE = GD.Load<Theme>(
+            "res://button_state.tres"
+        );
+        public static readonly Theme PROP = GD.Load<Theme>(
+            "res://button_prop.tres"
+        );
+        public static readonly Theme TAG = GD.Load<Theme>(
+            "res://button_tag.tres"
+        );
+    }
 }

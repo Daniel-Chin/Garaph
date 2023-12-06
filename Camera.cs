@@ -4,7 +4,7 @@ using System;
 public partial class Camera : Camera2D
 {
 	private const float MOVE_SPEED = 100f;
-	private const float SCROLL_SPEED = 1.1f;
+	private const float SCROLL_SPEED = 1.05f;
 	public override void _Ready()
 	{
 	}
@@ -46,11 +46,11 @@ public partial class Camera : Camera2D
 			switch (eMB.ButtonIndex)
 			{
 				case MouseButton.WheelUp:
-					Zoom *= SCROLL_SPEED;
+					ZoomBy(SCROLL_SPEED);
 					GetViewport().SetInputAsHandled();
 					break;
 				case MouseButton.WheelDown:
-					Zoom /= SCROLL_SPEED;
+					ZoomBy(1f / SCROLL_SPEED);
 					GetViewport().SetInputAsHandled();
 					break;
 			}
@@ -58,8 +58,21 @@ public partial class Camera : Camera2D
 		base._UnhandledInput(@event);
     }
 
+	private void ZoomBy(float scale)
+	{
+		Vector2 screen_cursor = GetViewport().GetMousePosition();
+		Vector2 cursor = ToWorld(screen_cursor);
+		Zoom *= scale;
+		Position = ToWorld(FromWorld(cursor) - screen_cursor);
+	}
+
 	public Vector2 ToWorld(Vector2 screen)
 	{
 		return screen / Zoom + Position;
+	}
+
+	public Vector2 FromWorld(Vector2 world)
+	{
+		return (world - Position) * Zoom;
 	}
 }

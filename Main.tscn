@@ -40,6 +40,11 @@ text = "New State"
 layout_mode = 2
 text = "New Prop"
 
+[node name="NewTag" type="Button" parent="ContextMenu/Margin/VBox"]
+layout_mode = 2
+text = "New Tag"
+
 [connection signal="pressed" from="ContextMenu/Margin/VBox/NewState" to="." method="OnClickNewState"]
 [connection signal="pressed" from="ContextMenu/Margin/VBox/NewProp" to="." method="_on_new_prop_pressed"]
 [connection signal="pressed" from="ContextMenu/Margin/VBox/NewProp" to="." method="OnClickNewProp"]
+[connection signal="pressed" from="ContextMenu/Margin/VBox/NewTag" to="." method="OnClickNewTag"]

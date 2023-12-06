@@ -1,21 +1,20 @@
 [gd_scene load_steps=3 format=3 uid="uid://b5j3flvubkj0g"]
 
 [ext_resource type="Theme" uid="uid://d18txvo78om7y" path="res://button_prop.tres" id="1_ta84n"]
-[ext_resource type="Theme" uid="uid://b2e871l02p8yr" path="res://button_state.tres" id="2_fdhcq"]
+[ext_resource type="Theme" uid="uid://c2pdflxnum6s2" path="res://button_tag.tres" id="2_271o5"]
 
 [node name="Playground" type="Node2D"]
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 offset_right = 40.0
 offset_bottom = 40.0
-theme = ExtResource("1_ta84n")
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
 
 [node name="Button" type="Button" parent="VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("2_fdhcq")
+theme = ExtResource("2_271o5")
 text = "ok"
 
 [node name="Button2" type="Button" parent="VBoxContainer"]

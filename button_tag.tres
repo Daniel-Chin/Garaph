@@ -1,9 +1,9 @@
-[gd_resource type="Theme" load_steps=2 format=3 uid="uid://d18txvo78om7y"]
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://c2pdflxnum6s2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ujxvv"]
 content_margin_left = 10.0
 content_margin_right = 10.0
-bg_color = Color(0.0313726, 0, 0.301961, 1)
+bg_color = Color(0.129412, 0.129412, 0.129412, 1)
 
 [resource]
 default_font_size = 36

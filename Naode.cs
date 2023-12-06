@@ -5,7 +5,7 @@ public partial class Naode : Node2D
 {
 	public enum Type
 	{
-		STATE, PROP, 
+		STATE, PROP, TAG, 
 	}
 
 	private int id;
@@ -34,8 +34,13 @@ public partial class Naode : Node2D
 		lineEdit.TextSubmitted += LineEditSubmit;
 		lineEdit.TextChanged += LineEditChange;
 
-		button.Theme = Shared.THEME;
-		lineEdit.Theme = Shared.THEME;
+		lineEdit.Theme = Shared.Themes.MAIN;
+		button.Theme = type switch {
+			Type.STATE => Shared.Themes.STATE,
+			Type.PROP  => Shared.Themes.PROP,
+			Type.TAG   => Shared.Themes.TAG,
+			_ => throw new Shared.FatalError(),
+		};
 	}
 
 	public void ButtonOnClick()

@@ -58,4 +58,11 @@ public partial class Main : Node2D
 		naode.Position = contextMenu.Position;
 		contextMenu.Visible = false;
 	}
+
+	public void OnClickNewTag()
+	{
+		Naode naode = NewNoade(Naode.Type.TAG);
+		naode.Position = contextMenu.Position;
+		contextMenu.Visible = false;
+	}
 }
