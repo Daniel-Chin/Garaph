@@ -14,6 +14,8 @@ script = ExtResource("1_dc132")
 anchor_mode = 0
 script = ExtResource("2_ppqa5")
 
+[node name="World" type="Node2D" parent="."]
+
 [node name="ContextMenu" type="PanelContainer" parent="."]
 offset_left = 108.0
 offset_top = 82.0

@@ -6,10 +6,12 @@ public partial class Main : Node2D
 {
 	private List<Naode> naodes = new();
 	private Camera camera;
+	private Node2D world;
 	private PanelContainer contextMenu;
 	public override void _Ready()
 	{
 		camera = GetNode<Camera>("Camera");
+		world = GetNode<Node2D>("World");
 		contextMenu = GetNode<PanelContainer>("ContextMenu");
 
 		contextMenu.Visible = false;
@@ -60,6 +62,7 @@ public partial class Main : Node2D
 			{
 				case MouseButton.Left:
 					contextMenu.Visible = false;
+					GlobalStates.SelectedId = null;
 					break;
 				case MouseButton.Right:
 					contextMenu.Visible = true;
@@ -76,7 +79,7 @@ public partial class Main : Node2D
 			GlobalStates.NextId, type
 		);
 		GlobalStates.NextId ++;
-		AddChild(naode);
+		world.AddChild(naode);
 		naode.Select();
 		return naode;
 	}

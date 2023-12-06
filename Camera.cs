@@ -3,8 +3,10 @@ using System;
 
 public partial class Camera : Camera2D
 {
-	private const float MOVE_SPEED = 100f;
+	private const float MOVE_SPEED = 500f;
 	private const float SCROLL_SPEED = 1.05f;
+
+	private bool is_dragging = false;
 	public override void _Ready()
 	{
 	}
@@ -53,6 +55,17 @@ public partial class Camera : Camera2D
 					ZoomBy(1f / SCROLL_SPEED);
 					GetViewport().SetInputAsHandled();
 					break;
+				case MouseButton.Middle:
+					is_dragging = eMB.Pressed;
+					break;
+			}
+		}
+		else if (@event is InputEventMouseMotion eMM)
+		{
+			if (is_dragging)
+			{
+				Position -= eMM.Relative / Zoom;
+				GetViewport().SetInputAsHandled();
 			}
 		}
 		base._UnhandledInput(@event);

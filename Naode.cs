@@ -54,8 +54,10 @@ public partial class Naode : Node2D
 			_ => throw new Shared.FatalError(),
 		};
 		lineEdit.PlaceholderText = "Type here";
-		lineEdit.CustomMinimumSize = new Vector2(300f, 0f);
+		lineEdit.CustomMinimumSize = new Vector2(200f, 0f);
 		lineEdit.ExpandToTextLength = true;
+
+		LineEditChange(Text);
 	}
 
 	public void ButtonOnClick()
@@ -65,15 +67,16 @@ public partial class Naode : Node2D
 
 	public void LineEditSubmit(string text)
 	{
-		if (Text.Length == 0)
-		{
-			Text = "Error: cannot be empty";
-		}
 		GlobalStates.SelectedId = null;
 	}
 
 	public void LineEditChange(string text)
 	{
+		if (text.Length == 0)
+		{
+			button.Text = "Error: cannot be empty";
+			return;
+		}
 		button.Text = text;
 	}
 
