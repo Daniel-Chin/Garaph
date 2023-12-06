@@ -15,6 +15,15 @@ public partial class Naode : Node2D
 	
 	public readonly int id;
 	public readonly Type type;
+	public string Text
+	{
+		get => button.Text;
+		set 
+		{
+			button.Text = value;
+			lineEdit.Text = value;
+		}
+	}
 
 	private Button button;
 	private LineEdit lineEdit;
@@ -24,13 +33,15 @@ public partial class Naode : Node2D
 	{
 		this.id = id;
 		this.type = type;
-	}
 
-	public override void _Ready()
-	{
-		button = GetNode<Button>("Button");
-		lineEdit = GetNode<LineEdit>("LineEdit");
+		button = new();
+		AddChild(button);
+		lineEdit = new();
+		AddChild(lineEdit);
+	// }
 
+	// public override void _Ready()
+	// {
 		button.Pressed += ButtonOnClick;
 		lineEdit.TextSubmitted += LineEditSubmit;
 		lineEdit.TextChanged += LineEditChange;
@@ -42,15 +53,22 @@ public partial class Naode : Node2D
 			Type.TAG   => Shared.Themes.TAG,
 			_ => throw new Shared.FatalError(),
 		};
+		lineEdit.PlaceholderText = "Type here";
+		lineEdit.CustomMinimumSize = new Vector2(300f, 0f);
+		lineEdit.ExpandToTextLength = true;
 	}
 
 	public void ButtonOnClick()
 	{
-		GlobalStates.SelectedId = id;
+		Select();
 	}
 
-	public static void LineEditSubmit(string text)
+	public void LineEditSubmit(string text)
 	{
+		if (Text.Length == 0)
+		{
+			Text = "Error: cannot be empty";
+		}
 		GlobalStates.SelectedId = null;
 	}
 
@@ -102,5 +120,11 @@ public partial class Naode : Node2D
 			RemoveChaild(chaild);
 		}
 		QueueFree();
+	}
+
+	public void Select()
+	{
+		GlobalStates.SelectedId = id;
+		lineEdit.GrabFocus();
 	}
 }

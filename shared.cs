@@ -5,6 +5,7 @@ using Godot;
 
 public static partial class Shared
 {
+    public static readonly Random Rand = new();
     public class FatalError : Exception { }
     public class AssertionFailed : Exception
     {

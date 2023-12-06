@@ -28,3 +28,11 @@ text = "ok"
 [node name="Line2D" type="Line2D" parent="."]
 points = PackedVector2Array(200, 200, 300, 300)
 gradient = SubResource("Gradient_bknqv")
+
+[node name="LineEdit" type="LineEdit" parent="."]
+offset_left = 293.0
+offset_top = 98.0
+offset_right = 360.063
+offset_bottom = 129.0
+text = "1234asdfgh"
+expand_to_text_length = true

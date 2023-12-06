@@ -19,15 +19,40 @@ public partial class Main : Node2D
 	{
 		foreach (Naode a in naodes)
 		{
+			Vector2 force = Vector2.Zero;
+			int rand_i = Shared.Rand.Next(naodes.Count);
 			foreach (Naode b in naodes)
 			{
+				if (a == b)
+					continue;
 				Vector2 displace = b.Position - a.Position;
+				float mag = displace.Length();
+				if (mag == 0.0f)
+					continue;
+				float inv_mag = 1.0f / mag;
+				Vector2 normed = displace * inv_mag;
+				// repell
+				force -= 1.0f * normed * inv_mag * inv_mag;
+				// attract
+				if (rand_i == b.id)
+				{
+					force += 1.0f * normed;
+				}
+				// spring
+				if (
+					a.Chaildren.Contains(b) || 
+					b.Chaildren.Contains(a)
+				)
+				{
+					force += 1.0f * displace;
+				}
 			}
+			a.Velocity += force * (float) delta;
 			a.Position += a.Velocity * (float) delta;
 		}
 	}
 
-    public override void _Input(InputEvent @event)
+    public override void _UnhandledInput(InputEvent @event)
     {
         if (@event is InputEventMouseButton eMB)
 		{
@@ -42,16 +67,17 @@ public partial class Main : Node2D
 					break;
 			}
 		}
-		base._Input(@event);
+		base._UnhandledInput(@event);
     }
 
 	private Naode NewNoade(Naode.Type type)
 	{
-		Naode naode = new Naode(
+		Naode naode = new(
 			GlobalStates.NextId, type
 		);
 		GlobalStates.NextId ++;
 		AddChild(naode);
+		naode.Select();
 		return naode;
 	}
 	
