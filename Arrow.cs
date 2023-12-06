@@ -1,35 +1,50 @@
 using Godot;
 using System;
 
-public partial class Arrow : Line2D
+public partial class FreeArrow : Line2D
 {
-    private static readonly Gradient GRADIENT;
-    static Arrow()
+    protected static readonly Gradient GRADIENT;
+    static FreeArrow()
     {
         GRADIENT = new Gradient();
         GRADIENT.AddPoint(0f, new Color(1f, 1f, 1f));
         GRADIENT.AddPoint(1f, new Color(0f, 1f, 0f));
     }
-    
+
+    public FreeArrow()
+    {
+        ZIndex = -1;
+        Gradient = GRADIENT;
+    }
+}
+public partial class Arrow : FreeArrow
+{
     private Naode parent;
     private Naode child;
 
-    public Arrow(Naode parent, Naode child)
+    public Arrow(Naode parent, Naode child) : base()
     {
         this.parent = parent;
         this.child = child;
-    }
 
-    public override void _Ready()
-    {
-        AddPoint(parent.Position);
-        AddPoint(child.Position);
-        Gradient = GRADIENT;
+        DefaultColor = Colors.Red;
     }
 
     public override void _Process(double delta)
     {
-        Points[0] = parent.Position;
-        Points[1] = child.Position;
+        ClearPoints();
+        AddPoint(parent.Position);
+        AddPoint(child.Position);
+        if (
+            GlobalStates.ArrowParent == parent.Id &&
+            GlobalStates.ArrowChild == child.Id
+        )
+        {
+            Gradient = null;
+        }
+        else
+        {
+            Gradient = GRADIENT;
+        }
     }
 }

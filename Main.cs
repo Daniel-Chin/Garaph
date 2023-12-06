@@ -5,11 +5,12 @@ using System.Collections.Generic;
 public partial class Main : Node2D
 {
 	public static Main Singleton;
-	private readonly List<Naode> naodes = new();
+	private readonly Dictionary<int, Naode> naodes = new();
 	private Camera camera;
 	private Node2D world;
 	private PanelContainer worldContextMenu;
 	private PanelContainer naodeContextMenu;
+	private FreeArrow arrowPreview;
 	public Main()
 	{
 		Singleton = this;
@@ -24,12 +25,15 @@ public partial class Main : Node2D
 		worldContextMenu.Visible = false;
 		naodeContextMenu.Visible = false;
 
+		arrowPreview = new();
+		AddChild(arrowPreview);
+
 		// test
-		Naode a = NewNoade(Naode.Type.STATE);
+		Naode a = NewNoade(Naode.EnumType.STATE);
 		a.Text = "State A";
 		a.Position = new Vector2(0f, 0f);
 
-		Naode b = NewNoade(Naode.Type.PROP);
+		Naode b = NewNoade(Naode.EnumType.PROP);
 		b.Text = "Prop B";
 		b.Position = new Vector2(100f, 0f);
 
@@ -44,11 +48,11 @@ public partial class Main : Node2D
 		{
 			delta *= 2.0f;
 		}
-		foreach (Naode a in naodes)
+		foreach (Naode a in naodes.Values)
 		{
 			Vector2 force = Vector2.Zero;
 			int rand_i = Shared.Rand.Next(naodes.Count);
-			foreach (Naode b in naodes)
+			foreach (Naode b in naodes.Values)
 			{
 				if (a == b)
 					continue;
@@ -62,7 +66,7 @@ public partial class Main : Node2D
 					force -= 1000000.0f * direction * inv_mag * inv_mag;
 				}
 				// attract
-				if (rand_i == b.id)
+				if (rand_i == b.Id)
 				{
 					force += 200.0f * direction;
 				}
@@ -98,12 +102,36 @@ public partial class Main : Node2D
 			}
 			if (
 				GlobalStates.SelectedId is int id &&
-				id == a.id
+				id == a.Id
 			)
 			{
 				a.Velocity = Vector2.Zero;
 			}
 			a.Position += a.Velocity * (float) delta;
+		}
+
+		arrowPreview.ClearPoints();
+		if (GlobalStates.ArrowParent is int parent_id)
+		{
+			Naode parent = naodes[parent_id];
+			if (GlobalStates.ArrowChild is int child_id)
+			{
+				Naode child = naodes[child_id];
+				if (parent.Chaildren.Contains(naodes[child_id]))
+				{
+					// don't show, leaving the red visible
+				}
+				else
+				{
+					arrowPreview.AddPoint(parent.Position);
+					arrowPreview.AddPoint(child .Position);
+				}
+			}
+			else 
+			{
+				arrowPreview.AddPoint(parent.Position);
+				arrowPreview.AddPoint(camera.GetWorldCursor());
+			}
 		}
 	}
 
@@ -127,13 +155,13 @@ public partial class Main : Node2D
 		base._UnhandledInput(@event);
     }
 
-	private Naode NewNoade(Naode.Type type)
+	private Naode NewNoade(Naode.EnumType type)
 	{
 		Naode naode = new(
 			GlobalStates.NextId, type
 		);
 		GlobalStates.NextId ++;
-		naodes.Add(naode);
+		naodes.Add(naode.Id, naode);
 		world.AddChild(naode);
 		naode.Select();
 		return naode;
@@ -141,27 +169,27 @@ public partial class Main : Node2D
 
 	private void RemoveNoade(Naode naode)
 	{
-		naodes.Remove(naode);
+		Shared.Assert(naodes.Remove(naode.Id));
 		naode.QFree();
 	}
 	
 	public void OnClickNewState()
 	{
-		Naode naode = NewNoade(Naode.Type.STATE);
+		Naode naode = NewNoade(Naode.EnumType.STATE);
 		naode.Position = worldContextMenu.Position;
 		worldContextMenu.Visible = false;
 	}
 
 	public void OnClickNewProp()
 	{
-		Naode naode = NewNoade(Naode.Type.PROP);
+		Naode naode = NewNoade(Naode.EnumType.PROP);
 		naode.Position = worldContextMenu.Position;
 		worldContextMenu.Visible = false;
 	}
 
 	public void OnClickNewTag()
 	{
-		Naode naode = NewNoade(Naode.Type.TAG);
+		Naode naode = NewNoade(Naode.EnumType.TAG);
 		naode.Position = worldContextMenu.Position;
 		worldContextMenu.Visible = false;
 	}
@@ -170,21 +198,40 @@ public partial class Main : Node2D
 	{
 		if (GlobalStates.SelectedId is int id)
 		{
-			Naode naode = naodes.Find(n => n.id == id);
+			Naode naode = naodes[id];
 			RemoveNoade(naode);
 		}
 		naodeContextMenu.Visible = false;
 	}
 
-	public void SpawnNoadeMenu(Vector2 screen_position)
+	public void NaodeReleaseRMB()
 	{
-		naodeContextMenu.Visible = true;
-		naodeContextMenu.Position = camera.ToWorld(screen_position);
+		if (GlobalStates.ArrowChild is int child_id)
+		{
+			int parent_id = GlobalStates.ArrowParent ?? throw new Shared.FatalError();
+			Naode parent = naodes[parent_id];
+			Naode child = naodes[child_id];
+			if (parent.Chaildren.Contains(child))
+			{
+				parent.RemoveChaild(child);
+			}
+			else
+			{
+				parent.AddChaild(child);
+			}
+		}
+		else
+		{
+			naodeContextMenu.Visible = true;
+			naodeContextMenu.Position = camera.GetWorldCursor();
+		}
+		GlobalStates.ArrowParent = null;
+		GlobalStates.ArrowChild = null;
 	}
 
 	public void DragNaode(int id, Vector2 relative)
 	{
-		Naode naode = naodes.Find(n => n.id == id);
+		Naode naode = naodes[id];
 		naode.Position += relative;
 	}
 }

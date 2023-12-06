@@ -8,21 +8,27 @@ public partial class Bautton : Button
     public Bautton(int id)
     {
         this.id = id;
+
+        MouseEntered += OnMouseEntered;
+        MouseExited += OnMouseExited;
     }
 
     public override void _GuiInput(InputEvent @event)
     {
         if (@event is InputEventMouseButton eMB)
         {
-            if (
-                eMB.ButtonIndex == MouseButton.Right && 
-                ! eMB.Pressed
-            )
+            if (eMB.ButtonIndex == MouseButton.Right)
             {
-                Main.Singleton.SpawnNoadeMenu(
-                    GetViewport().GetMousePosition()
-                );
-                GlobalStates.SelectedId = id;
+                if (eMB.Pressed)
+                {
+                    GlobalStates.ArrowParent = id;
+                    GlobalStates.ArrowChild = null;
+                }
+                else 
+                {
+                    GlobalStates.SelectedId = id;
+                    Main.Singleton.NaodeReleaseRMB();
+                }
                 GetViewport().SetInputAsHandled();
             }
             else if (
@@ -30,6 +36,7 @@ public partial class Bautton : Button
             )
             {
                 is_dragging = eMB.Pressed;
+                GetViewport().SetInputAsHandled();
             }
         }
         else if (@event is InputEventMouseMotion eMM)
@@ -41,5 +48,27 @@ public partial class Bautton : Button
             }
         }
         base._GuiInput(@event);
+    }
+
+    private void OnMouseEntered()
+    {
+        if (
+            GlobalStates.ArrowParent is int parent_id
+            && parent_id != id
+        )
+        {
+            GlobalStates.ArrowChild = id;
+        }
+    }
+
+    private void OnMouseExited()
+    {
+        if (
+            GlobalStates.ArrowChild is int child_id
+            && child_id == id
+        )
+        {
+            GlobalStates.ArrowChild = null;
+        }
     }
 }

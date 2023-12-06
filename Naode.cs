@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public partial class Naode : Node2D
 {
-	public enum Type
+	public enum EnumType
 	{
 		STATE, PROP, TAG, 
 	}
@@ -13,8 +13,8 @@ public partial class Naode : Node2D
 	public List<Naode> Paarents = new();
 	public List<Naode> Chaildren = new();
 	
-	public readonly int id;
-	public readonly Type type;
+	public readonly int Id;
+	public readonly EnumType Type;
 	public string Text
 	{
 		get => bautton.Text;
@@ -29,10 +29,10 @@ public partial class Naode : Node2D
 	private LineEdit lineEdit;
 	private readonly Dictionary<int, Arrow> arrows = new();
 
-	public Naode(int id, Type type)
+	public Naode(int id, EnumType type)
 	{
-		this.id = id;
-		this.type = type;
+		this.Id = id;
+		this.Type = type;
 
 		bautton = new(id);
 		AddChild(bautton);
@@ -48,9 +48,9 @@ public partial class Naode : Node2D
 
 		lineEdit.Theme = Shared.Themes.MAIN;
 		bautton.Theme = type switch {
-			Type.STATE => Shared.Themes.STATE,
-			Type.PROP  => Shared.Themes.PROP,
-			Type.TAG   => Shared.Themes.TAG,
+			EnumType.STATE => Shared.Themes.STATE,
+			EnumType.PROP  => Shared.Themes.PROP,
+			EnumType.TAG   => Shared.Themes.TAG,
 			_ => throw new Shared.FatalError(),
 		};
 		lineEdit.PlaceholderText = "Type here";
@@ -81,7 +81,7 @@ public partial class Naode : Node2D
 
 	public override void _Process(double delta)
 	{
-		bool is_selected = GlobalStates.SelectedId == id;
+		bool is_selected = GlobalStates.SelectedId == Id;
 		bautton.Visible = ! is_selected;
 		lineEdit.Visible = is_selected;
 	}
@@ -91,15 +91,15 @@ public partial class Naode : Node2D
 		Chaildren.Add(chaild);
 		chaild.Paarents.Add(this);
 		Arrow arrow = new(this, chaild);
-		arrows.Add(chaild.id, arrow); 
+		arrows.Add(chaild.Id, arrow); 
 		GetParent().AddChild(arrow);
 	}
 	public void RemoveChaild(Naode chaild)
 	{
 		Chaildren.Remove(chaild);
 		chaild.Paarents.Remove(this);
-		arrows[chaild.id].QueueFree();
-		arrows.Remove(chaild.id);
+		arrows[chaild.Id].QueueFree();
+		arrows.Remove(chaild.Id);
 	}
 	public void AddPaarent(Naode paarent)
 	{
@@ -125,7 +125,7 @@ public partial class Naode : Node2D
 
 	public void Select()
 	{
-		GlobalStates.SelectedId = id;
+		GlobalStates.SelectedId = Id;
 		lineEdit.GrabFocus();
 	}
 }

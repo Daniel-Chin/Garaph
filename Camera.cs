@@ -88,4 +88,6 @@ public partial class Camera : Camera2D
 	{
 		return (world - Position) * Zoom;
 	}
+
+	public Vector2 GetWorldCursor() => ToWorld(GetViewport().GetMousePosition());
 }
