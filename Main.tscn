@@ -12,11 +12,12 @@ script = ExtResource("1_dc132")
 
 [node name="Camera" type="Camera2D" parent="."]
 anchor_mode = 0
+zoom = Vector2(0.5, 0.5)
 script = ExtResource("2_ppqa5")
 
 [node name="World" type="Node2D" parent="."]
 
-[node name="ContextMenu" type="PanelContainer" parent="."]
+[node name="WorldContextMenu" type="PanelContainer" parent="."]
 offset_left = 108.0
 offset_top = 82.0
 offset_right = 199.0
@@ -24,28 +25,51 @@ offset_bottom = 152.0
 theme = ExtResource("3_5tpxd")
 theme_override_styles/panel = SubResource("StyleBoxFlat_jcf2e")
 
-[node name="Margin" type="MarginContainer" parent="ContextMenu"]
+[node name="Margin" type="MarginContainer" parent="WorldContextMenu"]
 layout_mode = 2
 theme_override_constants/margin_left = 2
 theme_override_constants/margin_top = 2
 theme_override_constants/margin_right = 2
 theme_override_constants/margin_bottom = 2
 
-[node name="VBox" type="VBoxContainer" parent="ContextMenu/Margin"]
+[node name="VBox" type="VBoxContainer" parent="WorldContextMenu/Margin"]
 layout_mode = 2
 
-[node name="NewState" type="Button" parent="ContextMenu/Margin/VBox"]
+[node name="NewState" type="Button" parent="WorldContextMenu/Margin/VBox"]
 layout_mode = 2
 text = "New State"
 
-[node name="NewProp" type="Button" parent="ContextMenu/Margin/VBox"]
+[node name="NewProp" type="Button" parent="WorldContextMenu/Margin/VBox"]
 layout_mode = 2
 text = "New Prop"
 
-[node name="NewTag" type="Button" parent="ContextMenu/Margin/VBox"]
+[node name="NewTag" type="Button" parent="WorldContextMenu/Margin/VBox"]
 layout_mode = 2
 text = "New Tag"
 
-[connection signal="pressed" from="ContextMenu/Margin/VBox/NewState" to="." method="OnClickNewState"]
-[connection signal="pressed" from="ContextMenu/Margin/VBox/NewProp" to="." method="OnClickNewProp"]
-[connection signal="pressed" from="ContextMenu/Margin/VBox/NewTag" to="." method="OnClickNewTag"]
+[node name="NaodeContextMenu" type="PanelContainer" parent="."]
+offset_left = 821.0
+offset_top = 509.0
+offset_right = 1057.0
+offset_bottom = 620.0
+theme = ExtResource("3_5tpxd")
+theme_override_styles/panel = SubResource("StyleBoxFlat_jcf2e")
+
+[node name="Margin" type="MarginContainer" parent="NaodeContextMenu"]
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="VBox" type="VBoxContainer" parent="NaodeContextMenu/Margin"]
+layout_mode = 2
+
+[node name="Delete" type="Button" parent="NaodeContextMenu/Margin/VBox"]
+layout_mode = 2
+text = "Delete"
+
+[connection signal="pressed" from="WorldContextMenu/Margin/VBox/NewState" to="." method="OnClickNewState"]
+[connection signal="pressed" from="WorldContextMenu/Margin/VBox/NewProp" to="." method="OnClickNewProp"]
+[connection signal="pressed" from="WorldContextMenu/Margin/VBox/NewTag" to="." method="OnClickNewTag"]
+[connection signal="pressed" from="NaodeContextMenu/Margin/VBox/Delete" to="." method="OnClickDelete"]

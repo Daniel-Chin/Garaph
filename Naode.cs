@@ -17,15 +17,15 @@ public partial class Naode : Node2D
 	public readonly Type type;
 	public string Text
 	{
-		get => button.Text;
+		get => bautton.Text;
 		set 
 		{
-			button.Text = value;
+			bautton.Text = value;
 			lineEdit.Text = value;
 		}
 	}
 
-	private Button button;
+	private Bautton bautton;
 	private LineEdit lineEdit;
 	private readonly Dictionary<int, Arrow> arrows = new();
 
@@ -34,38 +34,37 @@ public partial class Naode : Node2D
 		this.id = id;
 		this.type = type;
 
-		button = new();
-		AddChild(button);
+		bautton = new(id);
+		AddChild(bautton);
 		lineEdit = new();
 		AddChild(lineEdit);
 	// }
 
 	// public override void _Ready()
 	// {
-		button.Pressed += ButtonOnClick;
+		bautton.Pressed += BauttonOnClick;
 		lineEdit.TextSubmitted += LineEditSubmit;
 		lineEdit.TextChanged += LineEditChange;
 
 		lineEdit.Theme = Shared.Themes.MAIN;
-		button.Theme = type switch {
+		bautton.Theme = type switch {
 			Type.STATE => Shared.Themes.STATE,
 			Type.PROP  => Shared.Themes.PROP,
 			Type.TAG   => Shared.Themes.TAG,
 			_ => throw new Shared.FatalError(),
 		};
 		lineEdit.PlaceholderText = "Type here";
-		lineEdit.CustomMinimumSize = new Vector2(200f, 0f);
 		lineEdit.ExpandToTextLength = true;
 
 		LineEditChange(Text);
 	}
 
-	public void ButtonOnClick()
+	public void BauttonOnClick()
 	{
 		Select();
 	}
 
-	public void LineEditSubmit(string text)
+	public static void LineEditSubmit(string text)
 	{
 		GlobalStates.SelectedId = null;
 	}
@@ -74,17 +73,16 @@ public partial class Naode : Node2D
 	{
 		if (text.Length == 0)
 		{
-			button.Text = "Error: cannot be empty";
+			bautton.Text = "Error: cannot be empty";
 			return;
 		}
-		button.Text = text;
+		bautton.Text = text;
 	}
 
 	public override void _Process(double delta)
 	{
-		// lineEdit.Size = button.Size;
 		bool is_selected = GlobalStates.SelectedId == id;
-		button.Visible = ! is_selected;
+		bautton.Visible = ! is_selected;
 		lineEdit.Visible = is_selected;
 	}
 

@@ -4,17 +4,25 @@ using System.Collections.Generic;
 
 public partial class Main : Node2D
 {
-	private List<Naode> naodes = new();
+	public static Main Singleton;
+	private readonly List<Naode> naodes = new();
 	private Camera camera;
 	private Node2D world;
-	private PanelContainer contextMenu;
+	private PanelContainer worldContextMenu;
+	private PanelContainer naodeContextMenu;
+	public Main()
+	{
+		Singleton = this;
+	}
 	public override void _Ready()
 	{
 		camera = GetNode<Camera>("Camera");
 		world = GetNode<Node2D>("World");
-		contextMenu = GetNode<PanelContainer>("ContextMenu");
+		worldContextMenu = GetNode<PanelContainer>("WorldContextMenu");
+		naodeContextMenu = GetNode<PanelContainer>("NaodeContextMenu");
 
-		contextMenu.Visible = false;
+		worldContextMenu.Visible = false;
+		naodeContextMenu.Visible = false;
 	}
 
     public override void _Process(double delta)
@@ -74,12 +82,13 @@ public partial class Main : Node2D
 			switch (eMB.ButtonIndex)
 			{
 				case MouseButton.Left:
-					contextMenu.Visible = false;
+					worldContextMenu.Visible = false;
+					naodeContextMenu.Visible = false;
 					GlobalStates.SelectedId = null;
 					break;
 				case MouseButton.Right:
-					contextMenu.Visible = true;
-					contextMenu.Position = camera.ToWorld(eMB.Position);
+					worldContextMenu.Visible = true;
+					worldContextMenu.Position = camera.ToWorld(eMB.Position);
 					break;
 			}
 		}
@@ -92,29 +101,52 @@ public partial class Main : Node2D
 			GlobalStates.NextId, type
 		);
 		GlobalStates.NextId ++;
+		naodes.Add(naode);
 		world.AddChild(naode);
 		naode.Select();
 		return naode;
+	}
+
+	private void RemoveNoade(Naode naode)
+	{
+		naodes.Remove(naode);
+		naode.QFree();
 	}
 	
 	public void OnClickNewState()
 	{
 		Naode naode = NewNoade(Naode.Type.STATE);
-		naode.Position = contextMenu.Position;
-		contextMenu.Visible = false;
+		naode.Position = worldContextMenu.Position;
+		worldContextMenu.Visible = false;
 	}
 
 	public void OnClickNewProp()
 	{
 		Naode naode = NewNoade(Naode.Type.PROP);
-		naode.Position = contextMenu.Position;
-		contextMenu.Visible = false;
+		naode.Position = worldContextMenu.Position;
+		worldContextMenu.Visible = false;
 	}
 
 	public void OnClickNewTag()
 	{
 		Naode naode = NewNoade(Naode.Type.TAG);
-		naode.Position = contextMenu.Position;
-		contextMenu.Visible = false;
+		naode.Position = worldContextMenu.Position;
+		worldContextMenu.Visible = false;
+	}
+
+	public void OnClickDelete()
+	{
+		if (GlobalStates.SelectedId is int id)
+		{
+			Naode naode = naodes.Find(n => n.id == id);
+			RemoveNoade(naode);
+		}
+		naodeContextMenu.Visible = false;
+	}
+
+	public void SpawnNoadeMenu(Vector2 screen_position)
+	{
+		naodeContextMenu.Visible = true;
+		naodeContextMenu.Position = camera.ToWorld(screen_position);
 	}
 }

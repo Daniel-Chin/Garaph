@@ -1,5 +1,16 @@
-[gd_resource type="Theme" format=3 uid="uid://ducnwps7csqjw"]
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://ducnwps7csqjw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_alk6e"]
+bg_color = Color(1, 1, 1, 1)
 
 [resource]
-default_font_size = 36
+default_font_size = 72
 Button/colors/font_color = Color(1, 1, 1, 1)
+LineEdit/colors/caret_color = Color(0, 0, 0, 1)
+LineEdit/colors/clear_button_color = Color(0.239216, 0.239216, 0.239216, 1)
+LineEdit/colors/clear_button_color_pressed = Color(0, 0, 0, 1)
+LineEdit/colors/font_color = Color(0, 0, 0, 1)
+LineEdit/colors/font_placeholder_color = Color(0, 0, 0, 0.6)
+LineEdit/colors/font_selected_color = Color(0, 0, 0, 1)
+LineEdit/colors/selection_color = Color(0.368627, 0.368627, 0.368627, 1)
+LineEdit/styles/normal = SubResource("StyleBoxFlat_alk6e")
