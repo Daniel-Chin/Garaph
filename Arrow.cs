@@ -37,7 +37,9 @@ public partial class Arrow : FreeArrow
         AddPoint(child.Position);
         if (
             GlobalStates.ArrowParent == parent.Id &&
-            GlobalStates.ArrowChild == child.Id
+            GlobalStates.ArrowChild == child.Id ||
+            GlobalStates.ArrowParent == child.Id &&
+            GlobalStates.ArrowChild == parent.Id
         )
         {
             Gradient = null;

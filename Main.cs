@@ -117,7 +117,10 @@ public partial class Main : Node2D
 			if (GlobalStates.ArrowChild is int child_id)
 			{
 				Naode child = naodes[child_id];
-				if (parent.Chaildren.Contains(naodes[child_id]))
+				if (
+					parent.Chaildren.Contains(child) ||
+					child.Chaildren.Contains(parent)
+				)
 				{
 					// don't show, leaving the red visible
 				}
@@ -214,6 +217,10 @@ public partial class Main : Node2D
 			if (parent.Chaildren.Contains(child))
 			{
 				parent.RemoveChaild(child);
+			}
+			else if (child.Chaildren.Contains(parent))
+			{
+				child.RemoveChaild(parent);
 			}
 			else
 			{
