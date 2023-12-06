@@ -1,6 +1,21 @@
+using System;
+using Godot;
+
 #pragma warning disable CA1050 // Declare types in namespaces
 
-public enum ArrowKey
+public static partial class Shared
 {
-    UP, DOWN, LEFT, RIGHT, 
+    public class AssertionFailed : Exception
+    {
+        public AssertionFailed(string message) : base(message) { }
+    }
+
+    public static void Assert(bool x, string message = "")
+    {
+        if (!x)
+            throw new AssertionFailed(message);
+    }
+    public static readonly Theme THEME = GD.Load<Theme>(
+        "res://main_theme.tres"
+    );
 }

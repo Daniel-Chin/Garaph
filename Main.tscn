@@ -1,22 +1,45 @@
-[gd_scene load_steps=3 format=3 uid="uid://1nsg0xfud1mc"]
+[gd_scene load_steps=5 format=3 uid="uid://1nsg0xfud1mc"]
 
 [ext_resource type="Script" path="res://Main.cs" id="1_dc132"]
 [ext_resource type="Script" path="res://Camera.cs" id="2_ppqa5"]
+[ext_resource type="Theme" uid="uid://ducnwps7csqjw" path="res://main_theme.tres" id="3_5tpxd"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jcf2e"]
+bg_color = Color(0.631373, 0.631373, 0.631373, 1)
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_dc132")
 
 [node name="Camera" type="Camera2D" parent="."]
+anchor_mode = 0
 script = ExtResource("2_ppqa5")
 
-[node name="Naode" type="Node2D" parent="."]
-position = Vector2(100, 0)
+[node name="ContextMenu" type="PanelContainer" parent="."]
+offset_left = 108.0
+offset_top = 82.0
+offset_right = 199.0
+offset_bottom = 152.0
+theme = ExtResource("3_5tpxd")
+theme_override_styles/panel = SubResource("StyleBoxFlat_jcf2e")
 
-[node name="Button" type="Button" parent="Naode"]
-offset_right = 36.0
-offset_bottom = 31.0
-text = "123"
+[node name="Margin" type="MarginContainer" parent="ContextMenu"]
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
 
-[node name="LineEdit" type="LineEdit" parent="Naode"]
-offset_right = 67.0625
-offset_bottom = 31.0
+[node name="VBox" type="VBoxContainer" parent="ContextMenu/Margin"]
+layout_mode = 2
+
+[node name="NewState" type="Button" parent="ContextMenu/Margin/VBox"]
+layout_mode = 2
+text = "New State"
+
+[node name="NewProp" type="Button" parent="ContextMenu/Margin/VBox"]
+layout_mode = 2
+text = "New Prop"
+
+[connection signal="pressed" from="ContextMenu/Margin/VBox/NewState" to="." method="OnClickNewState"]
+[connection signal="pressed" from="ContextMenu/Margin/VBox/NewProp" to="." method="_on_new_prop_pressed"]
+[connection signal="pressed" from="ContextMenu/Margin/VBox/NewProp" to="." method="OnClickNewProp"]

@@ -1,0 +1,11 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://d18txvo78om7y"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ujxvv"]
+content_margin_left = 10.0
+content_margin_right = 10.0
+bg_color = Color(0.0313726, 0, 0.301961, 1)
+
+[resource]
+default_font_size = 36
+Button/styles/normal = SubResource("StyleBoxFlat_ujxvv")
+Button/colors/font_color = Color(1, 1, 1, 1)

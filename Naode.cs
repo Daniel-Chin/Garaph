@@ -3,13 +3,28 @@ using System;
 
 public partial class Naode : Node2D
 {
-	// props
+	public enum Type
+	{
+		STATE, PROP, 
+	}
+
 	private int id;
-	private bool is_selected;
-	private Action<int> on_click;
+	private Type type;
 
 	private Button button;
 	private LineEdit lineEdit;
+
+	// public Naode()
+	// {
+	//  	Shared.Assert(Engine.IsEditorHint());
+	// 	id = 0;
+	// }
+	public Naode(int id, Type type)
+	{
+		this.id = id;
+		this.type = type;
+	}
+
 	public override void _Ready()
 	{
 		button = GetNode<Button>("Button");
@@ -17,30 +32,32 @@ public partial class Naode : Node2D
 
 		button.Pressed += ButtonOnClick;
 		lineEdit.TextSubmitted += LineEditSubmit;
+		lineEdit.TextChanged += LineEditChange;
+
+		button.Theme = Shared.THEME;
+		lineEdit.Theme = Shared.THEME;
 	}
 
 	public void ButtonOnClick()
 	{
-		on_click(id);
+		GlobalStates.SelectedId = id;
 	}
 
-	public void LineEditSubmit(string text)
+	public static void LineEditSubmit(string text)
 	{
-		
+		GlobalStates.SelectedId = null;
 	}
 
-	public void SetProps(int id_, bool is_selected_, Action<int> on_click_)
+	public void LineEditChange(string text)
 	{
-		id = id_;
-		is_selected = is_selected_;
-		on_click = on_click_;
-		
-		button.Visible = ! is_selected;
-		lineEdit.Visible = is_selected;
+		button.Text = text;
 	}
 
 	public override void _Process(double delta)
 	{
-		lineEdit.Size = button.Size;
+		// lineEdit.Size = button.Size;
+		bool is_selected = GlobalStates.SelectedId == id;
+		button.Visible = ! is_selected;
+		lineEdit.Visible = is_selected;
 	}
 }

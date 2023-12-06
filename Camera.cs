@@ -11,6 +11,14 @@ public partial class Camera : Camera2D
 
 	public override void _Process(double delta)
 	{
+		Move(delta);
+	}
+
+	private void Move (double delta)
+	{
+		if (GlobalStates.SelectedId != null)
+			return;
+		
 		Vector2 velocity = Vector2.Zero;
 		if (Input.IsKeyPressed(Key.A))
 		{
@@ -49,4 +57,9 @@ public partial class Camera : Camera2D
 		}
 		base._UnhandledInput(@event);
     }
+
+	public Vector2 ToWorld(Vector2 screen)
+	{
+		return screen / Zoom + Position;
+	}
 }
