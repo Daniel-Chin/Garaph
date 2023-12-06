@@ -19,6 +19,7 @@ public partial class Main : Node2D
 
     public override void _Process(double delta)
 	{
+		bool accelerate = Input.IsKeyPressed(Key.Shift);
 		foreach (Naode a in naodes)
 		{
 			Vector2 force = Vector2.Zero;
@@ -34,11 +35,11 @@ public partial class Main : Node2D
 				float inv_mag = 1.0f / mag;
 				Vector2 normed = displace * inv_mag;
 				// repell
-				force -= 1.0f * normed * inv_mag * inv_mag;
+				force -= 100.0f * normed * inv_mag * inv_mag;
 				// attract
 				if (rand_i == b.id)
 				{
-					force += 1.0f * normed;
+					force += 100.0f * normed;
 				}
 				// spring
 				if (
@@ -46,10 +47,22 @@ public partial class Main : Node2D
 					b.Chaildren.Contains(a)
 				)
 				{
-					force += 1.0f * displace;
+					force += 100.0f * displace;
 				}
+				// friction
+				force -= 1.0f * a.Velocity.Normalized();
 			}
 			a.Velocity += force * (float) delta;
+			if (! accelerate)
+			{
+				float v_mag = a.Velocity.Length();
+				if (v_mag != 0.0f)
+				{
+					Vector2 direction = a.Velocity / v_mag;
+					v_mag = Math.Min(v_mag, 100.0f);
+					a.Velocity = direction * v_mag;
+				}
+			}
 			a.Position += a.Velocity * (float) delta;
 		}
 	}
