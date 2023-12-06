@@ -31,7 +31,7 @@ public partial class Camera : Camera2D
 		Position += velocity / Zoom * (float) delta;
 	}
 
-    public override void _Input(InputEvent @event)
+    public override void _UnhandledInput(InputEvent @event)
     {
 		if (@event is InputEventMouseButton eMB)
 		{
@@ -47,6 +47,6 @@ public partial class Camera : Camera2D
 					break;
 			}
 		}
-		base._Input(@event);
+		base._UnhandledInput(@event);
     }
 }
