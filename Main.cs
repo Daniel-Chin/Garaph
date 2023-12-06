@@ -44,81 +44,89 @@ public partial class Main : Node2D
 		GlobalStates.SelectedId = null;
 	}
 
-    public override void _Process(double db_delta)
+    public override void _PhysicsProcess(double db_delta)
 	{
 		bool accelerate = Input.IsKeyPressed(Key.Shift);
 		float delta = (float) db_delta;
-		if (accelerate)
+		for (int i = accelerate ? 4 : 1; i >= 0; i--)
 		{
-			delta *= 2.0f;
-		}
-		foreach (Naode a in naodes.Values)
-		{
-			Vector2 force = Vector2.Zero;
-			int rand_i = Shared.Rand.Next(naodes.Count);
-			foreach (Naode b in naodes.Values)
+			foreach (Naode a in naodes.Values)
 			{
-				if (a == b)
-					continue;
-				Vector2 displace = b.Position - a.Position;
-				float mag = displace.Length();
-				if (mag == 0.0f)
-					continue;
-				Vector2 direction = displace.Normalized();
-				// repell
+				Vector2 force = Vector2.Zero;
+				int rand_i = Shared.Rand.Next(naodes.Count);
+				foreach (Naode b in naodes.Values)
 				{
-					float adj_mag = Math.Max(mag - 200.0f, 2.0f);
-					float inv_mag = 1.0f / adj_mag;
-					force -= 2000000.0f * direction * inv_mag * inv_mag;
+					if (a == b)
+						continue;
+					Vector2 displace = b.Position - a.Position;
+					float mag = displace.Length();
+					if (mag == 0.0f)
+						continue;
+					Vector2 direction = displace.Normalized();
+					// repell
+					{
+						float adj_mag = Math.Max(mag - 200.0f, 20.0f);
+						float inv_mag = 1.0f / adj_mag;
+						force -= 2000000.0f * direction * inv_mag * inv_mag;
+					}
+					// attract
+					if (rand_i == b.Id)
+					{
+						force += 200.0f * direction;
+					}
+					// spring
+					if (
+						a.Chaildren.Contains(b) || 
+						b.Chaildren.Contains(a)
+					)
+					{
+						force += 0.3f * displace;
+					}
 				}
-				// attract
-				if (rand_i == b.Id)
+				a.Velocity += force * (float) delta;
+				// sliding friction
 				{
-					force += 200.0f * direction;
+					float mag = a.Velocity.Length();
+					if (mag != 0.0f)
+					{
+						Vector2 friction = -(
+							accelerate ? 60.0f : 20.0f
+						) * a.Velocity / mag;
+						a.Velocity += friction * (float) delta;
+					}
 				}
-				// spring
+				// static friction
+				if (a.Velocity.Length() / delta < 100.0f)
+				{
+					a.Velocity = Vector2.Zero;
+				}
+				if (! accelerate)
+				{
+					float v_mag = a.Velocity.Length();
+					if (v_mag != 0.0f)
+					{
+						Vector2 direction = a.Velocity / v_mag;
+						v_mag = Math.Min(v_mag, 100.0f);
+						a.Velocity = direction * v_mag;
+					}
+				}
 				if (
-					a.Chaildren.Contains(b) || 
-					b.Chaildren.Contains(a)
+					GlobalStates.SelectedId is int id &&
+					id == a.Id
 				)
 				{
-					force += 0.3f * displace;
+					a.Velocity = Vector2.Zero;
 				}
 			}
-			a.Velocity += force * (float) delta;
-			// sliding friction
-			Vector2 friction = -(
-				accelerate ? 40.0f : 20.0f
-			) * a.Velocity.Normalized();
-			a.Velocity += friction * (float) delta;
-			// static friction
-			if (a.Velocity.Length() / delta < 100.0f)
-			{
-				a.Velocity = Vector2.Zero;
-			}
-			if (! accelerate)
-			{
-				float v_mag = a.Velocity.Length();
-				if (v_mag != 0.0f)
-				{
-					Vector2 direction = a.Velocity / v_mag;
-					v_mag = Math.Min(v_mag, 100.0f);
-					a.Velocity = direction * v_mag;
-				}
-			}
-			if (
-				GlobalStates.SelectedId is int id &&
-				id == a.Id
-			)
-			{
-				a.Velocity = Vector2.Zero;
+			foreach (Naode a in naodes.Values)
+			{	// a seperate loop, to make sure all velocities are updated
+				a.Position += a.Velocity * (float) delta;
 			}
 		}
-		foreach (Naode a in naodes.Values)
-		{	// a seperate loop, to make sure all velocities are updated
-			a.Position += a.Velocity * (float) delta;
-		}
+	}
 
+    public override void _Process(double db_delta)
+	{
 		arrowPreview.ClearPoints();
 		if (GlobalStates.ArrowParent is int parent_id)
 		{
