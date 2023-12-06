@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://b5j3flvubkj0g"]
+[gd_scene load_steps=4 format=3 uid="uid://b5j3flvubkj0g"]
 
 [ext_resource type="Theme" uid="uid://d18txvo78om7y" path="res://button_prop.tres" id="1_ta84n"]
 [ext_resource type="Theme" uid="uid://c2pdflxnum6s2" path="res://button_tag.tres" id="2_271o5"]
+
+[sub_resource type="Gradient" id="Gradient_bknqv"]
+colors = PackedColorArray(0, 1, 0, 1, 1, 1, 1, 1)
 
 [node name="Playground" type="Node2D"]
 
@@ -21,3 +24,7 @@ text = "ok"
 layout_mode = 2
 theme = ExtResource("1_ta84n")
 text = "ok"
+
+[node name="Line2D" type="Line2D" parent="."]
+points = PackedVector2Array(200, 200, 300, 300)
+gradient = SubResource("Gradient_bknqv")

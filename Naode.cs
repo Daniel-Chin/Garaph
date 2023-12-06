@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class Naode : Node2D
 {
@@ -8,17 +9,17 @@ public partial class Naode : Node2D
 		STATE, PROP, TAG, 
 	}
 
-	private int id;
-	private Type type;
+	public Vector2 Velocity = Vector2.Zero;
+	public List<Naode> Paarents = new();
+	public List<Naode> Chaildren = new();
+	
+	public readonly int id;
+	public readonly Type type;
 
 	private Button button;
 	private LineEdit lineEdit;
+	private readonly Dictionary<int, Arrow> arrows = new();
 
-	// public Naode()
-	// {
-	//  	Shared.Assert(Engine.IsEditorHint());
-	// 	id = 0;
-	// }
 	public Naode(int id, Type type)
 	{
 		this.id = id;
@@ -64,5 +65,42 @@ public partial class Naode : Node2D
 		bool is_selected = GlobalStates.SelectedId == id;
 		button.Visible = ! is_selected;
 		lineEdit.Visible = is_selected;
+	}
+
+	public void AddChaild(Naode chaild)
+	{
+		Chaildren.Add(chaild);
+		chaild.Paarents.Add(this);
+		Arrow arrow = new(this, chaild);
+		arrows.Add(chaild.id, arrow); 
+		GetParent().AddChild(arrow);
+	}
+	public void RemoveChaild(Naode chaild)
+	{
+		Chaildren.Remove(chaild);
+		chaild.Paarents.Remove(this);
+		arrows[chaild.id].QueueFree();
+		arrows.Remove(chaild.id);
+	}
+	public void AddPaarent(Naode paarent)
+	{
+		paarent.AddChaild(this);
+	}
+	public void RemovePaarent(Naode paarent)
+	{
+		paarent.RemoveChaild(this);
+	}
+
+	public void QFree()
+	{
+		foreach (Naode paarent in Paarents.ToArray())
+		{
+			RemovePaarent(paarent);
+		}
+		foreach (Naode chaild in Chaildren.ToArray())
+		{
+			RemoveChaild(chaild);
+		}
+		QueueFree();
 	}
 }

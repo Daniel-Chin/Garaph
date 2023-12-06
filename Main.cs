@@ -1,8 +1,10 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class Main : Node2D
 {
+	private List<Naode> naodes = new();
 	private Camera camera;
 	private PanelContainer contextMenu;
 	public override void _Ready()
@@ -13,9 +15,17 @@ public partial class Main : Node2D
 		contextMenu.Visible = false;
 	}
 
-    // public override void _Process(double delta)
-	// {
-	// }
+    public override void _Process(double delta)
+	{
+		foreach (Naode a in naodes)
+		{
+			foreach (Naode b in naodes)
+			{
+				Vector2 displace = b.Position - a.Position;
+			}
+			a.Position += a.Velocity * (float) delta;
+		}
+	}
 
     public override void _Input(InputEvent @event)
     {
