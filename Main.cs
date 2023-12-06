@@ -31,11 +31,15 @@ public partial class Main : Node2D
 		// test
 		Naode a = NewNoade(Naode.EnumType.STATE);
 		a.Text = "State A";
-		a.Position = new Vector2(0f, 0f);
+		a.Position = new Vector2(500f, 500f);
 
 		Naode b = NewNoade(Naode.EnumType.PROP);
 		b.Text = "Prop B";
-		b.Position = new Vector2(100f, 0f);
+		b.Position = new Vector2(100f, 0f) + a.Position;
+
+		Naode c = NewNoade(Naode.EnumType.TAG);
+		c.Text = "Tag C";
+		c.Position = new Vector2(0f, 100f) + a.Position;
 
 		GlobalStates.SelectedId = null;
 	}
@@ -57,13 +61,15 @@ public partial class Main : Node2D
 				if (a == b)
 					continue;
 				Vector2 displace = b.Position - a.Position;
+				float mag = displace.Length();
+				if (mag == 0.0f)
+					continue;
 				Vector2 direction = displace.Normalized();
 				// repell
 				{
-					float mag = displace.Length() - 200.0f;
-					mag = Math.Max(mag, 2.0f);
-					float inv_mag = 1.0f / mag;
-					force -= 1000000.0f * direction * inv_mag * inv_mag;
+					float adj_mag = Math.Max(mag - 200.0f, 2.0f);
+					float inv_mag = 1.0f / adj_mag;
+					force -= 2000000.0f * direction * inv_mag * inv_mag;
 				}
 				// attract
 				if (rand_i == b.Id)
@@ -76,7 +82,7 @@ public partial class Main : Node2D
 					b.Chaildren.Contains(a)
 				)
 				{
-					force += 100.0f * displace;
+					force += 0.3f * displace;
 				}
 			}
 			a.Velocity += force * (float) delta;
@@ -107,6 +113,9 @@ public partial class Main : Node2D
 			{
 				a.Velocity = Vector2.Zero;
 			}
+		}
+		foreach (Naode a in naodes.Values)
+		{	// a seperate loop, to make sure all velocities are updated
 			a.Position += a.Velocity * (float) delta;
 		}
 
