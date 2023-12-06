@@ -23,11 +23,27 @@ public partial class Main : Node2D
 
 		worldContextMenu.Visible = false;
 		naodeContextMenu.Visible = false;
+
+		// test
+		Naode a = NewNoade(Naode.Type.STATE);
+		a.Text = "State A";
+		a.Position = new Vector2(0f, 0f);
+
+		Naode b = NewNoade(Naode.Type.PROP);
+		b.Text = "Prop B";
+		b.Position = new Vector2(100f, 0f);
+
+		GlobalStates.SelectedId = null;
 	}
 
-    public override void _Process(double delta)
+    public override void _Process(double db_delta)
 	{
 		bool accelerate = Input.IsKeyPressed(Key.Shift);
+		float delta = (float) db_delta;
+		if (accelerate)
+		{
+			delta *= 2.0f;
+		}
 		foreach (Naode a in naodes)
 		{
 			Vector2 force = Vector2.Zero;
@@ -37,17 +53,18 @@ public partial class Main : Node2D
 				if (a == b)
 					continue;
 				Vector2 displace = b.Position - a.Position;
-				float mag = displace.Length();
-				if (mag == 0.0f)
-					continue;
-				float inv_mag = 1.0f / mag;
-				Vector2 normed = displace * inv_mag;
+				Vector2 direction = displace.Normalized();
 				// repell
-				force -= 100.0f * normed * inv_mag * inv_mag;
+				{
+					float mag = displace.Length() - 200.0f;
+					mag = Math.Max(mag, 2.0f);
+					float inv_mag = 1.0f / mag;
+					force -= 1000000.0f * direction * inv_mag * inv_mag;
+				}
 				// attract
 				if (rand_i == b.id)
 				{
-					force += 100.0f * normed;
+					force += 200.0f * direction;
 				}
 				// spring
 				if (
@@ -57,10 +74,18 @@ public partial class Main : Node2D
 				{
 					force += 100.0f * displace;
 				}
-				// friction
-				force -= 1.0f * a.Velocity.Normalized();
 			}
 			a.Velocity += force * (float) delta;
+			// sliding friction
+			Vector2 friction = -(
+				accelerate ? 40.0f : 20.0f
+			) * a.Velocity.Normalized();
+			a.Velocity += friction * (float) delta;
+			// static friction
+			if (a.Velocity.Length() / delta < 100.0f)
+			{
+				a.Velocity = Vector2.Zero;
+			}
 			if (! accelerate)
 			{
 				float v_mag = a.Velocity.Length();
@@ -70,6 +95,13 @@ public partial class Main : Node2D
 					v_mag = Math.Min(v_mag, 100.0f);
 					a.Velocity = direction * v_mag;
 				}
+			}
+			if (
+				GlobalStates.SelectedId is int id &&
+				id == a.id
+			)
+			{
+				a.Velocity = Vector2.Zero;
 			}
 			a.Position += a.Velocity * (float) delta;
 		}
@@ -148,5 +180,11 @@ public partial class Main : Node2D
 	{
 		naodeContextMenu.Visible = true;
 		naodeContextMenu.Position = camera.ToWorld(screen_position);
+	}
+
+	public void DragNaode(int id, Vector2 relative)
+	{
+		Naode naode = naodes.Find(n => n.id == id);
+		naode.Position += relative;
 	}
 }
