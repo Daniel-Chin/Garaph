@@ -26,8 +26,7 @@ public partial class Bautton : Button
                 }
                 else 
                 {
-                    GlobalStates.SelectedId = id;
-                    Main.Singleton.NaodeReleaseRMB();
+                    Main.Singleton.NaodeReleaseRMB(id);
                 }
                 GetViewport().SetInputAsHandled();
             }

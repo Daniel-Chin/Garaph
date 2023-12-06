@@ -24,6 +24,10 @@ public partial class Naode : Node2D
 			lineEdit.Text = value;
 		}
 	}
+	public Vector2 Size
+	{
+		get => bautton.Size;
+	}
 
 	private Bautton bautton;
 	private LineEdit lineEdit;

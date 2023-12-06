@@ -59,6 +59,33 @@ public partial class Main : Node2D
 					if (a == b)
 						continue;
 					Vector2 displace = b.Position - a.Position;
+					float x = displace.X;
+					float y = displace.Y;
+					if (x < - b.Size.X)
+					{
+						x += b.Size.X;
+					}
+					else if (x > a.Size.X)
+					{
+						x -= a.Size.X;
+					}
+					else
+					{
+						x = Math.Sign(x);
+					}
+					if (y < - b.Size.Y)
+					{
+						y += b.Size.Y;
+					}
+					else if (y > a.Size.Y)
+					{
+						y -= a.Size.Y;
+					}
+					else
+					{
+						y = Math.Sign(y);
+					}
+					displace = new Vector2(x, y);
 					float mag = displace.Length();
 					if (mag == 0.0f)
 						continue;
@@ -67,7 +94,7 @@ public partial class Main : Node2D
 					{
 						float adj_mag = Math.Max(mag - 200.0f, 20.0f);
 						float inv_mag = 1.0f / adj_mag;
-						force -= 2000000.0f * direction * inv_mag * inv_mag;
+						force -= 500000.0f * direction * inv_mag * inv_mag;
 					}
 					// attract
 					if (rand_i == b.Id)
@@ -80,7 +107,7 @@ public partial class Main : Node2D
 						b.Chaildren.Contains(a)
 					)
 					{
-						force += 0.3f * displace;
+						force += 1f * displace;
 					}
 				}
 				a.Velocity += force * (float) delta;
@@ -96,10 +123,11 @@ public partial class Main : Node2D
 					}
 				}
 				// static friction
-				if (a.Velocity.Length() / delta < 100.0f)
+				if (a.Velocity.Length() / delta < 200.0f)
 				{
 					a.Velocity = Vector2.Zero;
 				}
+
 				if (! accelerate)
 				{
 					float v_mag = a.Velocity.Length();
@@ -224,7 +252,7 @@ public partial class Main : Node2D
 		naodeContextMenu.Visible = false;
 	}
 
-	public void NaodeReleaseRMB()
+	public void NaodeReleaseRMB(int id)
 	{
 		if (GlobalStates.ArrowChild is int child_id)
 		{
@@ -246,6 +274,7 @@ public partial class Main : Node2D
 		}
 		else
 		{
+			GlobalStates.SelectedId = id;
 			naodeContextMenu.Visible = true;
 			naodeContextMenu.Position = camera.GetWorldCursor();
 		}
