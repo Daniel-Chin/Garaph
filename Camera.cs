@@ -3,7 +3,7 @@ using System;
 
 public partial class Camera : Camera2D
 {
-	private const float MOVE_SPEED = 500f;
+	private const float MOVE_SPEED = 1000f;
 	private const float SCROLL_SPEED = 1.05f;
 
 	private bool is_dragging = false;

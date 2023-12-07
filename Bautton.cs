@@ -35,7 +35,6 @@ public partial class Bautton : Button
             )
             {
                 is_dragging = eMB.Pressed;
-                GetViewport().SetInputAsHandled();
             }
         }
         else if (@event is InputEventMouseMotion eMM)

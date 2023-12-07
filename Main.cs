@@ -8,7 +8,7 @@ public partial class Main : Node2D
 	private readonly Dictionary<int, Naode> naodes = new();
 	private Camera camera;
 	private Node2D world;
-	private PanelContainer worldContextMenu;
+	private Node2D worldContextMenu;
 	private PanelContainer naodeContextMenu;
 	private FreeArrow arrowPreview;
 	public Main()
@@ -19,7 +19,7 @@ public partial class Main : Node2D
 	{
 		camera = GetNode<Camera>("Camera");
 		world = GetNode<Node2D>("World");
-		worldContextMenu = GetNode<PanelContainer>("WorldContextMenu");
+		worldContextMenu = GetNode<Node2D>("WorldContextMenu");
 		naodeContextMenu = GetNode<PanelContainer>("NaodeContextMenu");
 
 		worldContextMenu.Visible = false;
@@ -44,11 +44,12 @@ public partial class Main : Node2D
 		GlobalStates.SelectedId = null;
 	}
 
-    public override void _PhysicsProcess(double db_delta)
+    private const int N_MINI_STEPS = 8;
+	public override void _PhysicsProcess(double db_delta)
 	{
 		bool accelerate = Input.IsKeyPressed(Key.Shift);
-		float delta = (float) db_delta;
-		for (int i = accelerate ? 4 : 1; i >= 0; i--)
+		float delta = (float) db_delta / N_MINI_STEPS;
+		for (int i = (accelerate ? 4 : 1) * N_MINI_STEPS; i >= 0; i--)
 		{
 			foreach (Naode a in naodes.Values)
 			{
@@ -92,14 +93,14 @@ public partial class Main : Node2D
 					Vector2 direction = displace.Normalized();
 					// repell
 					{
-						float adj_mag = Math.Max(mag - 200.0f, 20.0f);
+						float adj_mag = Math.Max(mag - 100.0f, 20.0f);
 						float inv_mag = 1.0f / adj_mag;
 						force -= 500000.0f * direction * inv_mag * inv_mag;
 					}
 					// attract
 					if (rand_i == b.Id)
 					{
-						force += 200.0f * direction;
+						force += 500.0f * direction;
 					}
 					// spring
 					if (
@@ -117,7 +118,7 @@ public partial class Main : Node2D
 					if (mag != 0.0f)
 					{
 						Vector2 friction = -(
-							accelerate ? 60.0f : 20.0f
+							accelerate ? 80.0f : 40.0f
 						) * a.Velocity / mag;
 						a.Velocity += friction * (float) delta;
 					}

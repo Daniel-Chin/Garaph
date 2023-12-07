@@ -6,6 +6,6 @@ content_margin_right = 10.0
 bg_color = Color(0.25, 0.25, 0, 1)
 
 [resource]
-default_font_size = 72
+default_font_size = 36
 Button/styles/normal = SubResource("StyleBoxFlat_ujxvv")
 Button/colors/font_color = Color(1, 1, 1, 1)

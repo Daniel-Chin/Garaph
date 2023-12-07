@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://1nsg0xfud1mc"]
+[gd_scene load_steps=7 format=3 uid="uid://1nsg0xfud1mc"]
 
 [ext_resource type="Script" path="res://Main.cs" id="1_dc132"]
 [ext_resource type="Script" path="res://Camera.cs" id="2_ppqa5"]
@@ -7,51 +7,88 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jcf2e"]
 bg_color = Color(0.631373, 0.631373, 0.631373, 1)
 
+[sub_resource type="InputEventKey" id="InputEventKey_o0gut"]
+device = -1
+ctrl_pressed = true
+keycode = 83
+
+[sub_resource type="Shortcut" id="Shortcut_1gj0q"]
+events = [SubResource("InputEventKey_o0gut")]
+
 [node name="Main" type="Node2D"]
 script = ExtResource("1_dc132")
 
 [node name="Camera" type="Camera2D" parent="."]
 anchor_mode = 0
-zoom = Vector2(0.5, 0.5)
 script = ExtResource("2_ppqa5")
 
 [node name="World" type="Node2D" parent="."]
 
-[node name="WorldContextMenu" type="PanelContainer" parent="."]
-offset_left = 108.0
-offset_top = 82.0
-offset_right = 199.0
-offset_bottom = 152.0
+[node name="WorldContextMenu" type="Node2D" parent="."]
+position = Vector2(202, 81)
+
+[node name="Right" type="PanelContainer" parent="WorldContextMenu"]
+offset_right = 190.0
+offset_bottom = 189.0
 theme = ExtResource("3_5tpxd")
 theme_override_styles/panel = SubResource("StyleBoxFlat_jcf2e")
 
-[node name="Margin" type="MarginContainer" parent="WorldContextMenu"]
+[node name="Margin" type="MarginContainer" parent="WorldContextMenu/Right"]
 layout_mode = 2
 theme_override_constants/margin_left = 2
 theme_override_constants/margin_top = 2
 theme_override_constants/margin_right = 2
 theme_override_constants/margin_bottom = 2
 
-[node name="VBox" type="VBoxContainer" parent="WorldContextMenu/Margin"]
+[node name="VBox" type="VBoxContainer" parent="WorldContextMenu/Right/Margin"]
 layout_mode = 2
 
-[node name="NewState" type="Button" parent="WorldContextMenu/Margin/VBox"]
+[node name="NewState" type="Button" parent="WorldContextMenu/Right/Margin/VBox"]
 layout_mode = 2
 text = "New State"
 
-[node name="NewProp" type="Button" parent="WorldContextMenu/Margin/VBox"]
+[node name="NewProp" type="Button" parent="WorldContextMenu/Right/Margin/VBox"]
 layout_mode = 2
 text = "New Prop"
 
-[node name="NewTag" type="Button" parent="WorldContextMenu/Margin/VBox"]
+[node name="NewTag" type="Button" parent="WorldContextMenu/Right/Margin/VBox"]
 layout_mode = 2
 text = "New Tag"
+
+[node name="Left" type="PanelContainer" parent="WorldContextMenu"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -228.0
+offset_bottom = 126.0
+grow_horizontal = 0
+theme = ExtResource("3_5tpxd")
+theme_override_styles/panel = SubResource("StyleBoxFlat_jcf2e")
+
+[node name="Margin" type="MarginContainer" parent="WorldContextMenu/Left"]
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="VBox" type="VBoxContainer" parent="WorldContextMenu/Left/Margin"]
+layout_mode = 2
+
+[node name="Save" type="Button" parent="WorldContextMenu/Left/Margin/VBox"]
+layout_mode = 2
+shortcut = SubResource("Shortcut_1gj0q")
+text = "Save (Ctrl+S)"
+
+[node name="Load" type="Button" parent="WorldContextMenu/Left/Margin/VBox"]
+layout_mode = 2
+text = "Load"
 
 [node name="NaodeContextMenu" type="PanelContainer" parent="."]
 offset_left = 821.0
 offset_top = 509.0
-offset_right = 1057.0
-offset_bottom = 620.0
+offset_right = 946.0
+offset_bottom = 572.0
 theme = ExtResource("3_5tpxd")
 theme_override_styles/panel = SubResource("StyleBoxFlat_jcf2e")
 
@@ -69,7 +106,7 @@ layout_mode = 2
 layout_mode = 2
 text = "Delete"
 
-[connection signal="pressed" from="WorldContextMenu/Margin/VBox/NewState" to="." method="OnClickNewState"]
-[connection signal="pressed" from="WorldContextMenu/Margin/VBox/NewProp" to="." method="OnClickNewProp"]
-[connection signal="pressed" from="WorldContextMenu/Margin/VBox/NewTag" to="." method="OnClickNewTag"]
+[connection signal="pressed" from="WorldContextMenu/Right/Margin/VBox/NewState" to="." method="OnClickNewState"]
+[connection signal="pressed" from="WorldContextMenu/Right/Margin/VBox/NewProp" to="." method="OnClickNewProp"]
+[connection signal="pressed" from="WorldContextMenu/Right/Margin/VBox/NewTag" to="." method="OnClickNewTag"]
 [connection signal="pressed" from="NaodeContextMenu/Margin/VBox/Delete" to="." method="OnClickDelete"]

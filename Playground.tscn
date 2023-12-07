@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://b5j3flvubkj0g"]
+[gd_scene load_steps=5 format=3 uid="uid://b5j3flvubkj0g"]
 
 [ext_resource type="Theme" uid="uid://d18txvo78om7y" path="res://button_prop.tres" id="1_ta84n"]
 [ext_resource type="Theme" uid="uid://c2pdflxnum6s2" path="res://button_tag.tres" id="2_271o5"]
+[ext_resource type="Theme" uid="uid://ducnwps7csqjw" path="res://main_theme.tres" id="3_f43uw"]
 
 [sub_resource type="Gradient" id="Gradient_bknqv"]
 colors = PackedColorArray(0, 1, 0, 1, 1, 1, 1, 1)
@@ -34,5 +35,6 @@ offset_left = 293.0
 offset_top = 98.0
 offset_right = 391.0
 offset_bottom = 129.0
+theme = ExtResource("3_f43uw")
 text = "1234asdfgh"
 expand_to_text_length = true
