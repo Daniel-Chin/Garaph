@@ -8,7 +8,7 @@ public partial class Main : Node2D
 {
 	public static Main Singleton;
 	private readonly Dictionary<int, Naode> naodes = new();
-	private Camera camera;
+	public Camera camera;
 	private Node2D world;
 	private Node2D worldContextMenu;
 	private PanelContainer naodeContextMenu;
@@ -153,6 +153,8 @@ public partial class Main : Node2D
 			}
 			foreach (Naode a in naodes.Values)
 			{	// a seperate loop, to make sure all velocities are updated
+				if (GlobalStates.ArrowChild == a.Id)
+					continue;
 				a.Position += a.Velocity * (float) delta;
 			}
 		}
@@ -322,7 +324,7 @@ public partial class Main : Node2D
 
 	public void OnFileSelected(string path)
 	{
-		GlobalStates.FileName = path;
+		GlobalStates.FileName = ProjectSettings.GlobalizePath(path);
 		switch (fileDialog.FileMode)
 		{
 			case FileDialog.FileModeEnum.SaveFile:
@@ -362,6 +364,7 @@ public partial class Main : Node2D
 			streamWriter.WriteLine(position.Y);
 			streamWriter.WriteLine();
 		}
+		streamWriter.WriteLine("}");
 		streamWriter.WriteLine("arrows {");
 		foreach (var (id, naode) in naodes)
 		{
@@ -386,6 +389,8 @@ public partial class Main : Node2D
 		{
 			streamReader.ReadLine();
 		}
+		SkipLine();
+		Shared.Assert(int.Parse(streamReader.ReadLine()) == 1);
 		SkipLine();
 		GlobalStates.NextId = int.Parse(streamReader.ReadLine());
 		SkipLine();

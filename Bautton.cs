@@ -5,6 +5,7 @@ public partial class Bautton : Button
 {
     private int id;
     private bool is_dragging = false;
+    private Vector2 drag_start = Vector2.Zero;
     public Bautton(int id)
     {
         this.id = id;
@@ -35,6 +36,19 @@ public partial class Bautton : Button
             )
             {
                 is_dragging = eMB.Pressed;
+                Vector2 world_cursor = Main.Singleton.camera.GetWorldCursor();
+                if (eMB.Pressed)
+                {
+                    drag_start = world_cursor;
+                }
+                else
+                {
+                    if (drag_start.DistanceTo(world_cursor) >= 10)
+                    {
+                        // inhibit Pressed event
+                        GetViewport().SetInputAsHandled();
+                    }
+                }
             }
         }
         else if (@event is InputEventMouseMotion eMM)
