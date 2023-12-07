@@ -4,7 +4,6 @@ using System;
 public partial class Bautton : Button
 {
     private int id;
-    private bool is_dragging = false;
     private Vector2 drag_start = Vector2.Zero;
     public Bautton(int id)
     {
@@ -35,14 +34,15 @@ public partial class Bautton : Button
                 eMB.ButtonIndex == MouseButton.Left
             )
             {
-                is_dragging = eMB.Pressed;
                 Vector2 world_cursor = Main.Singleton.camera.GetWorldCursor();
                 if (eMB.Pressed)
                 {
+                    GlobalStates.DraggedId = id;
                     drag_start = world_cursor;
                 }
                 else
                 {
+                    GlobalStates.DraggedId = null;
                     if (drag_start.DistanceTo(world_cursor) >= 10)
                     {
                         // inhibit Pressed event
@@ -53,7 +53,7 @@ public partial class Bautton : Button
         }
         else if (@event is InputEventMouseMotion eMM)
         {
-            if (is_dragging)
+            if (GlobalStates.DraggedId == id)
             {
                 Main.Singleton.DragNaode(id, eMM.Relative);
                 GetViewport().SetInputAsHandled();

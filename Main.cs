@@ -55,10 +55,20 @@ public partial class Main : Node2D
 		float delta = (float) db_delta / N_MINI_STEPS;
 		for (int i = (accelerate ? 4 : 1) * N_MINI_STEPS; i >= 0; i--)
 		{
+			Vector2 center = Vector2.Zero;
 			foreach (Naode a in naodes.Values)
 			{
-				Vector2 force = Vector2.Zero;
-				int rand_i = Shared.Rand.Next(naodes.Count);
+				center += a.Position;
+			}
+			center /= naodes.Count;
+			Vector2 total_attract = Vector2.Zero;
+			foreach (Naode a in naodes.Values)
+			{
+				a.Force = Vector2.Zero;
+				// attract
+				Vector2 attract = 500.0f * (center - a.Position).Normalized();
+				total_attract += a.Force;
+				a.Force += attract;
 				foreach (Naode b in naodes.Values)
 				{
 					if (a == b)
@@ -99,12 +109,7 @@ public partial class Main : Node2D
 					{
 						float adj_mag = Math.Max(mag - 100.0f, 20.0f);
 						float inv_mag = 1.0f / adj_mag;
-						force -= 500000.0f * direction * inv_mag * inv_mag;
-					}
-					// attract
-					if (rand_i == b.Id)
-					{
-						force += 500.0f * direction;
+						a.Force -= 500000.0f * direction * inv_mag * inv_mag;
 					}
 					// spring
 					if (
@@ -112,10 +117,17 @@ public partial class Main : Node2D
 						b.Chaildren.Contains(a)
 					)
 					{
-						force += 1f * displace;
+						a.Force += 1f * displace;
 					}
 				}
-				a.Velocity += force * (float) delta;
+			}
+			if (center != Vector2.Zero)
+			{	// make sure attraction forces are balanced
+				naodes.Values.First().Force -= total_attract;
+			}
+			foreach (Naode a in naodes.Values)
+			{
+				a.Velocity += a.Force * (float) delta;
 				// sliding friction
 				{
 					float mag = a.Velocity.Length();
@@ -128,11 +140,12 @@ public partial class Main : Node2D
 					}
 				}
 				// static friction
-				if (a.Velocity.Length() / delta < 200.0f)
+				if (a.Velocity.Length() / delta < 1.0f)
 				{
 					a.Velocity = Vector2.Zero;
 				}
 
+				// velocity cap
 				if (! accelerate)
 				{
 					float v_mag = a.Velocity.Length();
@@ -152,8 +165,11 @@ public partial class Main : Node2D
 				}
 			}
 			foreach (Naode a in naodes.Values)
-			{	// a seperate loop, to make sure all velocities are updated
-				if (GlobalStates.ArrowChild == a.Id)
+			{
+				if (
+					a.Id == GlobalStates.ArrowChild ||
+					a.Id == GlobalStates.DraggedId
+				)
 					continue;
 				a.Position += a.Velocity * (float) delta;
 			}

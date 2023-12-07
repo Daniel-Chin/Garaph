@@ -22,6 +22,7 @@ public partial class Naode : Node2D
 	};
 
 	public Vector2 Velocity = Vector2.Zero;
+	public Vector2 Force;
 	public List<Naode> Paarents = new();
 	public List<Naode> Chaildren = new();
 	
@@ -47,8 +48,8 @@ public partial class Naode : Node2D
 
 	public Naode(int id, EnumType type)
 	{
-		this.Id = id;
-		this.Type = type;
+		Id = id;
+		Type = type;
 
 		bautton = new(id);
 		AddChild(bautton);
