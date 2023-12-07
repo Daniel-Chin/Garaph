@@ -1,6 +1,8 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 public partial class Main : Node2D
 {
@@ -10,6 +12,7 @@ public partial class Main : Node2D
 	private Node2D world;
 	private Node2D worldContextMenu;
 	private PanelContainer naodeContextMenu;
+	private FileDialog fileDialog;
 	private FreeArrow arrowPreview;
 	public Main()
 	{
@@ -21,6 +24,7 @@ public partial class Main : Node2D
 		world = GetNode<Node2D>("World");
 		worldContextMenu = GetNode<Node2D>("WorldContextMenu");
 		naodeContextMenu = GetNode<PanelContainer>("NaodeContextMenu");
+		fileDialog = GetNode<FileDialog>("FileDialog");
 
 		worldContextMenu.Visible = false;
 		naodeContextMenu.Visible = false;
@@ -197,8 +201,16 @@ public partial class Main : Node2D
 					break;
 				case MouseButton.Right:
 					worldContextMenu.Visible = true;
-					worldContextMenu.Position = camera.ToWorld(eMB.Position);
+					worldContextMenu.Position = camera.GetWorldCursor();
 					break;
+			}
+		}
+		else if (@event is InputEventKey iEK)
+		{
+			if (iEK.Keycode == Key.Ctrl)
+			{
+				worldContextMenu.Visible = iEK.Pressed;
+				worldContextMenu.Position = camera.GetWorldCursor();
 			}
 		}
 		base._UnhandledInput(@event);
@@ -288,4 +300,144 @@ public partial class Main : Node2D
 		Naode naode = naodes[id];
 		naode.Position += relative;
 	}
+
+	public void OnClickSave()
+	{
+		worldContextMenu.Visible = false;
+		if (GlobalStates.FileName == null)
+		{
+			fileDialog.FileMode = FileDialog.FileModeEnum.SaveFile;
+			fileDialog.PopupCentered();
+			return;
+		}
+		Save();
+	}
+
+	public void OnClickOpen()
+	{
+		worldContextMenu.Visible = false;
+		fileDialog.FileMode = FileDialog.FileModeEnum.OpenFile;
+		fileDialog.PopupCentered();
+	}
+
+	public void OnFileSelected(string path)
+	{
+		GlobalStates.FileName = path;
+		switch (fileDialog.FileMode)
+		{
+			case FileDialog.FileModeEnum.SaveFile:
+				Save();
+				break;
+			case FileDialog.FileModeEnum.OpenFile:
+				Open();
+				break;
+			default:
+				throw new Shared.FatalError();
+		}
+	}
+
+	private void Save()
+	{
+		string file_name = GlobalStates.FileName ?? throw new Shared.FatalError();
+        using StreamWriter streamWriter = new(file_name);
+		streamWriter.WriteLine("Garaph save file version = ");
+		streamWriter.WriteLine(1);
+		streamWriter.WriteLine("next id = ");
+		streamWriter.WriteLine(GlobalStates.NextId);
+		streamWriter.WriteLine("camera zoom = ");
+		streamWriter.WriteLine(camera.Zoom.X);
+		streamWriter.WriteLine("naodes {");
+		foreach (var (id, naode) in naodes)
+		{
+			streamWriter.WriteLine("id = ");
+			streamWriter.WriteLine(id);
+			streamWriter.WriteLine("type = ");
+			streamWriter.WriteLine(Naode.Type2Str(naode.Type));
+			streamWriter.WriteLine("text = ");
+			streamWriter.WriteLine(naode.Text);
+			Vector2 position = naode.Position - camera.Position;
+			streamWriter.WriteLine("position.x = ");
+			streamWriter.WriteLine(position.X);
+			streamWriter.WriteLine("position.y = ");
+			streamWriter.WriteLine(position.Y);
+			streamWriter.WriteLine();
+		}
+		streamWriter.WriteLine("arrows {");
+		foreach (var (id, naode) in naodes)
+		{
+			streamWriter.WriteLine("paarent = ");
+			streamWriter.WriteLine(id);
+			streamWriter.WriteLine("chaildren {");
+			foreach (Naode chaild in naode.Chaildren)
+			{
+				streamWriter.WriteLine(chaild.Id);
+			}
+			streamWriter.WriteLine("}");
+		}
+		streamWriter.WriteLine("}");
+    }
+
+	private void Open()
+	{
+		string file_name = GlobalStates.FileName ?? throw new Shared.FatalError();
+		Reset();
+        using StreamReader streamReader = new(file_name);
+		void SkipLine()
+		{
+			streamReader.ReadLine();
+		}
+		SkipLine();
+		GlobalStates.NextId = int.Parse(streamReader.ReadLine());
+		SkipLine();
+		camera.Zoom = float.Parse(streamReader.ReadLine()) * Vector2.One; 
+		camera.Position = Vector2.Zero;
+		SkipLine();
+		while (streamReader.ReadLine() != "}")
+		{
+			int id = int.Parse(streamReader.ReadLine());
+			SkipLine();
+			Naode.EnumType type = Naode.Str2Type(streamReader.ReadLine());
+			SkipLine();
+			Naode naode = new(id, type);
+			naodes.Add(naode.Id, naode);
+			world.AddChild(naode);
+			naode.Text = streamReader.ReadLine();
+			SkipLine();
+			float x = float.Parse(streamReader.ReadLine());
+			SkipLine();
+			float y = float.Parse(streamReader.ReadLine());
+			naode.Position = new Vector2(x, y);
+			SkipLine();
+		}
+		SkipLine();
+		while (streamReader.ReadLine() != "}")
+		{
+			int parent_id = int.Parse(streamReader.ReadLine());
+			Naode parent = naodes[parent_id];
+			SkipLine();
+			while (true)
+			{
+				string line = streamReader.ReadLine();
+				if (line == "}")
+					break;
+				int child_id = int.Parse(line);
+				Naode child = naodes[child_id];
+				parent.AddChaild(child);
+			}
+		}
+	}
+
+	private void Reset()
+	{
+		foreach (Naode naode in naodes.Values.ToArray())
+		{
+			RemoveNoade(naode);
+		}
+		GlobalStates.NextId = 0;
+		GlobalStates.SelectedId = null;
+		GlobalStates.ArrowParent = null;
+		GlobalStates.ArrowChild = null;
+	}
+
+	public bool IsDialogOpen() => fileDialog.Visible;
 }

@@ -18,7 +18,10 @@ public partial class Camera : Camera2D
 
 	private void Move (double delta)
 	{
-		if (GlobalStates.SelectedId != null)
+		if (
+			GlobalStates.SelectedId != null ||
+			Main.Singleton.IsDialogOpen()
+		)
 			return;
 		
 		Vector2 velocity = Vector2.Zero;

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://1nsg0xfud1mc"]
+[gd_scene load_steps=9 format=3 uid="uid://1nsg0xfud1mc"]
 
 [ext_resource type="Script" path="res://Main.cs" id="1_dc132"]
 [ext_resource type="Script" path="res://Camera.cs" id="2_ppqa5"]
@@ -14,6 +14,14 @@ keycode = 83
 
 [sub_resource type="Shortcut" id="Shortcut_1gj0q"]
 events = [SubResource("InputEventKey_o0gut")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_d0pg1"]
+device = -1
+ctrl_pressed = true
+keycode = 79
+
+[sub_resource type="Shortcut" id="Shortcut_8ea2e"]
+events = [SubResource("InputEventKey_d0pg1")]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_dc132")
@@ -80,9 +88,10 @@ layout_mode = 2
 shortcut = SubResource("Shortcut_1gj0q")
 text = "Save (Ctrl+S)"
 
-[node name="Load" type="Button" parent="WorldContextMenu/Left/Margin/VBox"]
+[node name="Open" type="Button" parent="WorldContextMenu/Left/Margin/VBox"]
 layout_mode = 2
-text = "Load"
+shortcut = SubResource("Shortcut_8ea2e")
+text = "Open (Ctrl+O)"
 
 [node name="NaodeContextMenu" type="PanelContainer" parent="."]
 offset_left = 821.0
@@ -106,7 +115,14 @@ layout_mode = 2
 layout_mode = 2
 text = "Delete"
 
+[node name="FileDialog" type="FileDialog" parent="."]
+size = Vector2i(392, 162)
+access = 2
+filters = PackedStringArray("*.garaph ; Garaphs", "*.*; Any")
+
 [connection signal="pressed" from="WorldContextMenu/Right/Margin/VBox/NewState" to="." method="OnClickNewState"]
 [connection signal="pressed" from="WorldContextMenu/Right/Margin/VBox/NewProp" to="." method="OnClickNewProp"]
 [connection signal="pressed" from="WorldContextMenu/Right/Margin/VBox/NewTag" to="." method="OnClickNewTag"]
+[connection signal="pressed" from="WorldContextMenu/Left/Margin/VBox/Save" to="." method="OnClickSave"]
+[connection signal="pressed" from="WorldContextMenu/Left/Margin/VBox/Open" to="." method="OnClickOpen"]
 [connection signal="pressed" from="NaodeContextMenu/Margin/VBox/Delete" to="." method="OnClickDelete"]

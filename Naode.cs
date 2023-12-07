@@ -8,6 +8,18 @@ public partial class Naode : Node2D
 	{
 		STATE, PROP, TAG, 
 	}
+	public static EnumType Str2Type(string str) => str switch {
+		"STATE" => EnumType.STATE,
+		"PROP"  => EnumType.PROP,
+		"TAG"   => EnumType.TAG,
+		_ => throw new Shared.FatalError(),
+	};
+	public static string Type2Str(EnumType type) => type switch {
+		EnumType.STATE => "STATE",
+		EnumType.PROP  => "PROP",
+		EnumType.TAG   => "TAG",
+		_ => throw new Shared.FatalError(),
+	};
 
 	public Vector2 Velocity = Vector2.Zero;
 	public List<Naode> Paarents = new();
