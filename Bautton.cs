@@ -9,6 +9,8 @@ public partial class Bautton : Button
     {
         this.id = id;
 
+        // FocusMode = FocusModeEnum.None;
+
         MouseEntered += OnMouseEntered;
         MouseExited += OnMouseExited;
     }
@@ -43,6 +45,9 @@ public partial class Bautton : Button
                 else
                 {
                     GlobalStates.DraggedId = null;
+                    // release the focus. Somehow ReleaseFocus() would leave the button black??
+                    Visible = false;
+                    Visible = true;
                     if (drag_start.DistanceTo(world_cursor) >= 10)
                     {
                         // inhibit Pressed event

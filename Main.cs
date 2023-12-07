@@ -134,7 +134,7 @@ public partial class Main : Node2D
 					if (mag != 0.0f)
 					{
 						Vector2 friction = -(
-							accelerate ? 80.0f : 40.0f
+							accelerate ? 80.0f : 80.0f
 						) * a.Velocity / mag;
 						a.Velocity += friction * (float) delta;
 					}
