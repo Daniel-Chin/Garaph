@@ -93,6 +93,11 @@ layout_mode = 2
 shortcut = SubResource("Shortcut_8ea2e")
 text = "Open (Ctrl+O)"
 
+[node name="UserData" type="Button" parent="WorldContextMenu/Left/Margin/VBox"]
+layout_mode = 2
+shortcut = SubResource("Shortcut_8ea2e")
+text = "View User Data Dir"
+
 [node name="NaodeContextMenu" type="PanelContainer" parent="."]
 offset_left = 821.0
 offset_top = 509.0
@@ -116,8 +121,8 @@ layout_mode = 2
 text = "Delete"
 
 [node name="FileDialog" type="FileDialog" parent="."]
-size = Vector2i(392, 162)
-access = 2
+size = Vector2i(900, 500)
+access = 1
 filters = PackedStringArray("*.garaph ; Garaphs", "*.*; Any")
 
 [connection signal="pressed" from="WorldContextMenu/Right/Margin/VBox/NewState" to="." method="OnClickNewState"]
@@ -125,4 +130,5 @@ filters = PackedStringArray("*.garaph ; Garaphs", "*.*; Any")
 [connection signal="pressed" from="WorldContextMenu/Right/Margin/VBox/NewTag" to="." method="OnClickNewTag"]
 [connection signal="pressed" from="WorldContextMenu/Left/Margin/VBox/Save" to="." method="OnClickSave"]
 [connection signal="pressed" from="WorldContextMenu/Left/Margin/VBox/Open" to="." method="OnClickOpen"]
+[connection signal="pressed" from="WorldContextMenu/Left/Margin/VBox/UserData" to="." method="OnClickViewUserDataDir"]
 [connection signal="pressed" from="NaodeContextMenu/Margin/VBox/Delete" to="." method="OnClickDelete"]

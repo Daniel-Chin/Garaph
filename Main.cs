@@ -440,4 +440,10 @@ public partial class Main : Node2D
 	}
 
 	public bool IsDialogOpen() => fileDialog.Visible;
+
+	public void OnClickViewUserDataDir()
+	{
+		worldContextMenu.Visible = false;
+		OS.ShellOpen(OS.GetUserDataDir());
+	}
 }
