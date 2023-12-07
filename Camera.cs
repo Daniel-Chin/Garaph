@@ -3,12 +3,16 @@ using System;
 
 public partial class Camera : Camera2D
 {
-	private const float MOVE_SPEED = 1000f;
+	private const float MOVE_SPEED = 0.5f;
 	private const float SCROLL_SPEED = 1.05f;
+
+	private float move_speed_normed;
 
 	private bool is_dragging = false;
 	public override void _Ready()
 	{
+		Vector2 size = GetViewportRect().Size;
+		move_speed_normed = Math.Min(size.X, size.Y) * MOVE_SPEED;
 	}
 
 	public override void _Process(double delta)
@@ -27,19 +31,19 @@ public partial class Camera : Camera2D
 		Vector2 velocity = Vector2.Zero;
 		if (Input.IsKeyPressed(Key.A))
 		{
-			velocity += new Vector2(-MOVE_SPEED, 0f);
+			velocity += new Vector2(-move_speed_normed, 0f);
 		}
 		if (Input.IsKeyPressed(Key.D))
 		{
-			velocity += new Vector2(+MOVE_SPEED, 0f);
+			velocity += new Vector2(+move_speed_normed, 0f);
 		}
 		if (Input.IsKeyPressed(Key.W))
 		{
-			velocity += new Vector2(0f, -MOVE_SPEED);
+			velocity += new Vector2(0f, -move_speed_normed);
 		}
 		if (Input.IsKeyPressed(Key.S))
 		{
-			velocity += new Vector2(0f, +MOVE_SPEED);
+			velocity += new Vector2(0f, +move_speed_normed);
 		}
 		Position += velocity / Zoom * (float) delta;
 	}
