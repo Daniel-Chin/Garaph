@@ -35,7 +35,7 @@ public partial class Main : Node2D
 		ChangesUnsaved.Visible = false;
 
 		arrowPreview = new();
-		AddChild(arrowPreview);
+		ground.AddChild(arrowPreview);
 
 		// test
 		// Naode a = NewNoade(Naode.EnumType.STATE);

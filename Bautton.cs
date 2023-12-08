@@ -13,6 +13,8 @@ public partial class Bautton : Button
 
         MouseEntered += OnMouseEntered;
         MouseExited += OnMouseExited;
+
+        MouseFilter = MouseFilterEnum.Pass;
     }
 
     public override void _GuiInput(InputEvent @event)
