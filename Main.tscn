@@ -34,44 +34,51 @@ events = [SubResource("InputEventKey_5up5q")]
 [node name="Main" type="Node2D"]
 script = ExtResource("1_dc132")
 
-[node name="Camera" type="Camera2D" parent="."]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="World" type="SubViewport" parent="SubViewportContainer"]
+size = Vector2i(1920, 1080)
+
+[node name="Camera" type="Camera2D" parent="SubViewportContainer/World"]
 anchor_mode = 0
 script = ExtResource("2_ppqa5")
 
-[node name="World" type="Node2D" parent="."]
+[node name="Ground" type="Node2D" parent="SubViewportContainer/World"]
 
-[node name="WorldContextMenu" type="Node2D" parent="."]
+[node name="GroundContextMenu" type="Node2D" parent="SubViewportContainer/World"]
 position = Vector2(412, 79)
 
-[node name="Right" type="PanelContainer" parent="WorldContextMenu"]
+[node name="Right" type="PanelContainer" parent="SubViewportContainer/World/GroundContextMenu"]
 offset_right = 190.0
 offset_bottom = 189.0
 theme = ExtResource("3_5tpxd")
 theme_override_styles/panel = SubResource("StyleBoxFlat_jcf2e")
 
-[node name="Margin" type="MarginContainer" parent="WorldContextMenu/Right"]
+[node name="Margin" type="MarginContainer" parent="SubViewportContainer/World/GroundContextMenu/Right"]
 layout_mode = 2
 theme_override_constants/margin_left = 2
 theme_override_constants/margin_top = 2
 theme_override_constants/margin_right = 2
 theme_override_constants/margin_bottom = 2
 
-[node name="VBox" type="VBoxContainer" parent="WorldContextMenu/Right/Margin"]
+[node name="VBox" type="VBoxContainer" parent="SubViewportContainer/World/GroundContextMenu/Right/Margin"]
 layout_mode = 2
 
-[node name="NewState" type="Button" parent="WorldContextMenu/Right/Margin/VBox"]
+[node name="NewState" type="Button" parent="SubViewportContainer/World/GroundContextMenu/Right/Margin/VBox"]
 layout_mode = 2
 text = "New State"
 
-[node name="NewProp" type="Button" parent="WorldContextMenu/Right/Margin/VBox"]
+[node name="NewProp" type="Button" parent="SubViewportContainer/World/GroundContextMenu/Right/Margin/VBox"]
 layout_mode = 2
 text = "New Prop"
 
-[node name="NewTag" type="Button" parent="WorldContextMenu/Right/Margin/VBox"]
+[node name="NewTag" type="Button" parent="SubViewportContainer/World/GroundContextMenu/Right/Margin/VBox"]
 layout_mode = 2
 text = "New Tag"
 
-[node name="Left" type="PanelContainer" parent="WorldContextMenu"]
+[node name="Left" type="PanelContainer" parent="SubViewportContainer/World/GroundContextMenu"]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -81,36 +88,36 @@ grow_horizontal = 0
 theme = ExtResource("3_5tpxd")
 theme_override_styles/panel = SubResource("StyleBoxFlat_jcf2e")
 
-[node name="Margin" type="MarginContainer" parent="WorldContextMenu/Left"]
+[node name="Margin" type="MarginContainer" parent="SubViewportContainer/World/GroundContextMenu/Left"]
 layout_mode = 2
 theme_override_constants/margin_left = 2
 theme_override_constants/margin_top = 2
 theme_override_constants/margin_right = 2
 theme_override_constants/margin_bottom = 2
 
-[node name="VBox" type="VBoxContainer" parent="WorldContextMenu/Left/Margin"]
+[node name="VBox" type="VBoxContainer" parent="SubViewportContainer/World/GroundContextMenu/Left/Margin"]
 layout_mode = 2
 
-[node name="Save" type="Button" parent="WorldContextMenu/Left/Margin/VBox"]
+[node name="Save" type="Button" parent="SubViewportContainer/World/GroundContextMenu/Left/Margin/VBox"]
 layout_mode = 2
 shortcut = SubResource("Shortcut_1gj0q")
 text = "Save (Ctrl+S)"
 
-[node name="Open" type="Button" parent="WorldContextMenu/Left/Margin/VBox"]
+[node name="Open" type="Button" parent="SubViewportContainer/World/GroundContextMenu/Left/Margin/VBox"]
 layout_mode = 2
 shortcut = SubResource("Shortcut_h5xxh")
 text = "Open (Ctrl+O)"
 
-[node name="New" type="Button" parent="WorldContextMenu/Left/Margin/VBox"]
+[node name="New" type="Button" parent="SubViewportContainer/World/GroundContextMenu/Left/Margin/VBox"]
 layout_mode = 2
 shortcut = SubResource("Shortcut_8ea2e")
 text = "New (Ctrl+N)"
 
-[node name="UserData" type="Button" parent="WorldContextMenu/Left/Margin/VBox"]
+[node name="UserData" type="Button" parent="SubViewportContainer/World/GroundContextMenu/Left/Margin/VBox"]
 layout_mode = 2
 text = "View User Data Dir"
 
-[node name="NaodeContextMenu" type="PanelContainer" parent="."]
+[node name="NaodeContextMenu" type="PanelContainer" parent="SubViewportContainer/World"]
 offset_left = 821.0
 offset_top = 509.0
 offset_right = 946.0
@@ -118,17 +125,17 @@ offset_bottom = 572.0
 theme = ExtResource("3_5tpxd")
 theme_override_styles/panel = SubResource("StyleBoxFlat_jcf2e")
 
-[node name="Margin" type="MarginContainer" parent="NaodeContextMenu"]
+[node name="Margin" type="MarginContainer" parent="SubViewportContainer/World/NaodeContextMenu"]
 layout_mode = 2
 theme_override_constants/margin_left = 2
 theme_override_constants/margin_top = 2
 theme_override_constants/margin_right = 2
 theme_override_constants/margin_bottom = 2
 
-[node name="VBox" type="VBoxContainer" parent="NaodeContextMenu/Margin"]
+[node name="VBox" type="VBoxContainer" parent="SubViewportContainer/World/NaodeContextMenu/Margin"]
 layout_mode = 2
 
-[node name="Delete" type="Button" parent="NaodeContextMenu/Margin/VBox"]
+[node name="Delete" type="Button" parent="SubViewportContainer/World/NaodeContextMenu/Margin/VBox"]
 layout_mode = 2
 text = "Delete"
 
@@ -154,13 +161,13 @@ ok_button_text = "Yes, discard"
 dialog_text = "There are changes unsaved. Discard them to proceed?"
 dialog_autowrap = true
 
-[connection signal="pressed" from="WorldContextMenu/Right/Margin/VBox/NewState" to="." method="OnClickNewState"]
-[connection signal="pressed" from="WorldContextMenu/Right/Margin/VBox/NewProp" to="." method="OnClickNewProp"]
-[connection signal="pressed" from="WorldContextMenu/Right/Margin/VBox/NewTag" to="." method="OnClickNewTag"]
-[connection signal="pressed" from="WorldContextMenu/Left/Margin/VBox/Save" to="." method="OnClickSave"]
-[connection signal="pressed" from="WorldContextMenu/Left/Margin/VBox/Open" to="." method="OnClickOpen"]
-[connection signal="pressed" from="WorldContextMenu/Left/Margin/VBox/New" to="." method="OnClickNew"]
-[connection signal="pressed" from="WorldContextMenu/Left/Margin/VBox/UserData" to="." method="OnClickViewUserDataDir"]
-[connection signal="pressed" from="NaodeContextMenu/Margin/VBox/Delete" to="." method="OnClickDelete"]
+[connection signal="pressed" from="SubViewportContainer/World/GroundContextMenu/Right/Margin/VBox/NewState" to="." method="OnClickNewState"]
+[connection signal="pressed" from="SubViewportContainer/World/GroundContextMenu/Right/Margin/VBox/NewProp" to="." method="OnClickNewProp"]
+[connection signal="pressed" from="SubViewportContainer/World/GroundContextMenu/Right/Margin/VBox/NewTag" to="." method="OnClickNewTag"]
+[connection signal="pressed" from="SubViewportContainer/World/GroundContextMenu/Left/Margin/VBox/Save" to="." method="OnClickSave"]
+[connection signal="pressed" from="SubViewportContainer/World/GroundContextMenu/Left/Margin/VBox/Open" to="." method="OnClickOpen"]
+[connection signal="pressed" from="SubViewportContainer/World/GroundContextMenu/Left/Margin/VBox/New" to="." method="OnClickNew"]
+[connection signal="pressed" from="SubViewportContainer/World/GroundContextMenu/Left/Margin/VBox/UserData" to="." method="OnClickViewUserDataDir"]
+[connection signal="pressed" from="SubViewportContainer/World/NaodeContextMenu/Margin/VBox/Delete" to="." method="OnClickDelete"]
 [connection signal="file_selected" from="FileDialog" to="." method="OnFileSelected"]
 [connection signal="confirmed" from="DiscardUnsavedDialog" to="." method="OnDiscardUnsavedDialogConfirmed"]

@@ -9,8 +9,8 @@ public partial class Main : Node2D
 	public static Main Singleton;
 	public readonly Dictionary<int, Naode> Naodes = new();
 	public Camera camera;
-	private Node2D world;
-	private Node2D worldContextMenu;
+	private Node2D ground;
+	private Node2D groundContextMenu;
 	public PanelContainer NaodeContextMenu;
 	private FileDialog fileDialog;
 	private FreeArrow arrowPreview;
@@ -22,15 +22,15 @@ public partial class Main : Node2D
 	}
 	public override void _Ready()
 	{
-		camera = GetNode<Camera>("Camera");
-		world = GetNode<Node2D>("World");
-		worldContextMenu = GetNode<Node2D>("WorldContextMenu");
-		NaodeContextMenu = GetNode<PanelContainer>("NaodeContextMenu");
+		camera = GetNode<Camera>("SubViewportContainer/World/Camera");
+		ground = GetNode<Node2D>("SubViewportContainer/World/Ground");
+		groundContextMenu = GetNode<Node2D>("SubViewportContainer/World/GroundContextMenu");
+		NaodeContextMenu = GetNode<PanelContainer>("SubViewportContainer/World/NaodeContextMenu");
 		fileDialog = GetNode<FileDialog>("FileDialog");
 		ChangesUnsaved = GetNode<Label>("ChangesUnsaved");
 		DiscardUnsavedDialog = GetNode<ConfirmationDialog>("DiscardUnsavedDialog");
 
-		worldContextMenu.Visible = false;
+		groundContextMenu.Visible = false;
 		NaodeContextMenu.Visible = false;
 		ChangesUnsaved.Visible = false;
 
@@ -220,7 +220,7 @@ public partial class Main : Node2D
 				case MouseButton.Left:
 					if (eMB.Pressed)
 					{
-						worldContextMenu.Visible = false;
+						groundContextMenu.Visible = false;
 						NaodeContextMenu.Visible = false;
 						GlobalStates.SelectedId = null;
 					}
@@ -228,8 +228,8 @@ public partial class Main : Node2D
 				case MouseButton.Right:
 					if (! eMB.Pressed)
 					{
-						worldContextMenu.Visible = true;
-						worldContextMenu.Position = camera.GetWorldCursor();
+						groundContextMenu.Visible = true;
+						groundContextMenu.Position = camera.GetWorldCursor();
 					}
 					break;
 			}
@@ -238,8 +238,8 @@ public partial class Main : Node2D
 		{
 			if (iEK.Keycode == Key.Ctrl)
 			{
-				worldContextMenu.Visible = iEK.Pressed;
-				worldContextMenu.Position = camera.GetWorldCursor();
+				groundContextMenu.Visible = iEK.Pressed;
+				groundContextMenu.Position = camera.GetWorldCursor();
 			}
 		}
 		base._UnhandledInput(@event);
@@ -252,7 +252,7 @@ public partial class Main : Node2D
 		);
 		GlobalStates.NextId ++;
 		Naodes.Add(naode.Id, naode);
-		world.AddChild(naode);
+		ground.AddChild(naode);
 		naode.Select();
 		ChangesUnsaved.Visible = true;
 		return naode;
@@ -267,22 +267,22 @@ public partial class Main : Node2D
 	public void OnClickNewState()
 	{
 		Naode naode = NewNoade(Naode.EnumType.STATE);
-		naode.Position = worldContextMenu.Position;
-		worldContextMenu.Visible = false;
+		naode.Position = groundContextMenu.Position;
+		groundContextMenu.Visible = false;
 	}
 
 	public void OnClickNewProp()
 	{
 		Naode naode = NewNoade(Naode.EnumType.PROP);
-		naode.Position = worldContextMenu.Position;
-		worldContextMenu.Visible = false;
+		naode.Position = groundContextMenu.Position;
+		groundContextMenu.Visible = false;
 	}
 
 	public void OnClickNewTag()
 	{
 		Naode naode = NewNoade(Naode.EnumType.TAG);
-		naode.Position = worldContextMenu.Position;
-		worldContextMenu.Visible = false;
+		naode.Position = groundContextMenu.Position;
+		groundContextMenu.Visible = false;
 	}
 
 	public void OnClickDelete()
@@ -335,7 +335,7 @@ public partial class Main : Node2D
 
 	public void OnClickSave()
 	{
-		worldContextMenu.Visible = false;
+		groundContextMenu.Visible = false;
 		if (GlobalStates.FileName == null)
 		{
 			fileDialog.FileMode = FileDialog.FileModeEnum.SaveFile;
@@ -347,7 +347,7 @@ public partial class Main : Node2D
 
 	public void OnClickOpen()
 	{
-		worldContextMenu.Visible = false;
+		groundContextMenu.Visible = false;
 		fileDialog.FileMode = FileDialog.FileModeEnum.OpenFile;
 		fileDialog.PopupCentered();
 	}
@@ -436,7 +436,7 @@ public partial class Main : Node2D
 			SkipLine();
 			Naode naode = new(id, type);
 			Naodes.Add(naode.Id, naode);
-			world.AddChild(naode);
+			ground.AddChild(naode);
 			naode.Text = streamReader.ReadLine();
 			SkipLine();
 			float x = float.Parse(streamReader.ReadLine());
@@ -480,13 +480,13 @@ public partial class Main : Node2D
 
 	public void OnClickViewUserDataDir()
 	{
-		worldContextMenu.Visible = false;
+		groundContextMenu.Visible = false;
 		OS.ShellOpen(OS.GetUserDataDir());
 	}
 
 	public void OnClickNew()
 	{
-		worldContextMenu.Visible = false;
+		groundContextMenu.Visible = false;
 		if (ChangesUnsaved.Visible)
 		{
 			DiscardUnsavedDialog.PopupCentered();
