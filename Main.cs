@@ -39,7 +39,8 @@ public partial class Main : Node2D
 		arrowPreview = new();
 		ground.AddChild(arrowPreview);
 
-		CLI();
+		// CLI(null);
+		CLI(new string[] { "C:/Users/iGlop/d/Flute/software/react_design.garaph" });
 
 		// test
 		// Naode a = NewNoade(Naode.EnumType.STATE);
@@ -531,9 +532,9 @@ public partial class Main : Node2D
 		confirmIfUnsaved(() => GetTree().Quit());
 	}
 
-	private void CLI()
+	private void CLI(string[] args)
 	{
-		string[] args = OS.GetCmdlineArgs();
+		args ??= OS.GetCmdlineArgs();
 		GD.PrintRaw("Command line args: [");
 		foreach (string arg in args)
 		{
