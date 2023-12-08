@@ -3,7 +3,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ujxvv"]
 content_margin_left = 10.0
 content_margin_right = 10.0
-bg_color = Color(0.75, 0.75, 0.75, 1)
+bg_color = Color(0.8, 0.8, 0.8, 1)
 
 [resource]
 default_font_size = 36
