@@ -140,4 +140,6 @@ public partial class Naode : Node2D
 		Main.Singleton.NaodeContextMenu.Visible = false;
 		lineEdit.GrabFocus();
 	}
+
+	public Vector2 Center() => Position + 0.5f * Size;
 }

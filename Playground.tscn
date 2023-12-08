@@ -2,10 +2,8 @@
 
 [ext_resource type="Theme" uid="uid://d18txvo78om7y" path="res://button_prop.tres" id="1_ta84n"]
 [ext_resource type="Theme" uid="uid://c2pdflxnum6s2" path="res://button_tag.tres" id="2_271o5"]
+[ext_resource type="Gradient" uid="uid://dclbuwohy3kk0" path="res://gradient.tres" id="3_7ywoq"]
 [ext_resource type="Theme" uid="uid://ducnwps7csqjw" path="res://main_theme.tres" id="3_f43uw"]
-
-[sub_resource type="Gradient" id="Gradient_bknqv"]
-colors = PackedColorArray(0, 1, 0, 1, 1, 1, 1, 1)
 
 [node name="Playground" type="Node2D"]
 
@@ -28,7 +26,8 @@ text = "ok"
 
 [node name="Line2D" type="Line2D" parent="."]
 points = PackedVector2Array(200, 200, 300, 300)
-gradient = SubResource("Gradient_bknqv")
+default_color = Color(1, 0, 0, 1)
+gradient = ExtResource("3_7ywoq")
 
 [node name="LineEdit" type="LineEdit" parent="."]
 offset_left = 293.0

@@ -3,13 +3,15 @@ using System;
 
 public partial class FreeArrow : Line2D
 {
-    protected static readonly Gradient GRADIENT;
-    static FreeArrow()
-    {
-        GRADIENT = new Gradient();
-        GRADIENT.AddPoint(0f, new Color(0f, 1f, 1f));
-        GRADIENT.AddPoint(1f, new Color(0f, 1f, 0f));
-    }
+    protected static readonly Gradient GRADIENT = GD.Load<
+        Gradient
+    >("res://gradient.tres");
+    // static FreeArrow()
+    // {
+    //     GRADIENT = new Gradient();
+    //     GRADIENT.AddPoint(0f, new Color(1f, 1f, 1f));
+    //     GRADIENT.AddPoint(1f, new Color(0f, 1f, 0f));
+    // }
 
     public FreeArrow()
     {
@@ -33,8 +35,8 @@ public partial class Arrow : FreeArrow
     public override void _Process(double delta)
     {
         ClearPoints();
-        AddPoint(parent.Position);
-        AddPoint(child.Position);
+        AddPoint(parent.Center());
+        AddPoint(child.Center());
         if (
             GlobalStates.ArrowParent == parent.Id &&
             GlobalStates.ArrowChild == child.Id ||
