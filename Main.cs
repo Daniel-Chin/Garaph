@@ -14,6 +14,8 @@ public partial class Main : Node2D
 	public PanelContainer NaodeContextMenu;
 	private FileDialog fileDialog;
 	private FreeArrow arrowPreview;
+	public Label ChangesUnsaved;
+	private ConfirmationDialog DiscardUnsavedDialog;
 	public Main()
 	{
 		Singleton = this;
@@ -25,27 +27,30 @@ public partial class Main : Node2D
 		worldContextMenu = GetNode<Node2D>("WorldContextMenu");
 		NaodeContextMenu = GetNode<PanelContainer>("NaodeContextMenu");
 		fileDialog = GetNode<FileDialog>("FileDialog");
+		ChangesUnsaved = GetNode<Label>("ChangesUnsaved");
+		DiscardUnsavedDialog = GetNode<ConfirmationDialog>("DiscardUnsavedDialog");
 
 		worldContextMenu.Visible = false;
 		NaodeContextMenu.Visible = false;
+		ChangesUnsaved.Visible = false;
 
 		arrowPreview = new();
 		AddChild(arrowPreview);
 
 		// test
-		Naode a = NewNoade(Naode.EnumType.STATE);
-		a.Text = "State A";
-		a.Position = new Vector2(500f, 500f);
+		// Naode a = NewNoade(Naode.EnumType.STATE);
+		// a.Text = "State A";
+		// a.Position = new Vector2(500f, 500f);
 
-		Naode b = NewNoade(Naode.EnumType.PROP);
-		b.Text = "Prop B";
-		b.Position = new Vector2(100f, 0f) + a.Position;
+		// Naode b = NewNoade(Naode.EnumType.PROP);
+		// b.Text = "Prop B";
+		// b.Position = new Vector2(100f, 0f) + a.Position;
 
-		Naode c = NewNoade(Naode.EnumType.TAG);
-		c.Text = "Tag C";
-		c.Position = new Vector2(0f, 100f) + a.Position;
+		// Naode c = NewNoade(Naode.EnumType.TAG);
+		// c.Text = "Tag C";
+		// c.Position = new Vector2(0f, 100f) + a.Position;
 
-		GlobalStates.SelectedId = null;
+		// GlobalStates.SelectedId = null;
 	}
 
     private const int N_MINI_STEPS = 8;
@@ -121,7 +126,7 @@ public partial class Main : Node2D
 					}
 				}
 			}
-			if (center != Vector2.Zero)
+			if (total_attract != Vector2.Zero)
 			{	// make sure attraction forces are balanced
 				Naodes.Values.First().Force -= total_attract;
 			}
@@ -213,13 +218,19 @@ public partial class Main : Node2D
 			switch (eMB.ButtonIndex)
 			{
 				case MouseButton.Left:
-					worldContextMenu.Visible = false;
-					NaodeContextMenu.Visible = false;
-					GlobalStates.SelectedId = null;
+					if (eMB.Pressed)
+					{
+						worldContextMenu.Visible = false;
+						NaodeContextMenu.Visible = false;
+						GlobalStates.SelectedId = null;
+					}
 					break;
 				case MouseButton.Right:
-					worldContextMenu.Visible = true;
-					worldContextMenu.Position = camera.GetWorldCursor();
+					if (! eMB.Pressed)
+					{
+						worldContextMenu.Visible = true;
+						worldContextMenu.Position = camera.GetWorldCursor();
+					}
 					break;
 			}
 		}
@@ -243,6 +254,7 @@ public partial class Main : Node2D
 		Naodes.Add(naode.Id, naode);
 		world.AddChild(naode);
 		naode.Select();
+		ChangesUnsaved.Visible = true;
 		return naode;
 	}
 
@@ -279,6 +291,7 @@ public partial class Main : Node2D
 		{
 			Naode naode = Naodes[id];
 			RemoveNoade(naode);
+			ChangesUnsaved.Visible = true;
 		}
 		NaodeContextMenu.Visible = false;
 	}
@@ -302,6 +315,7 @@ public partial class Main : Node2D
 			{
 				parent.AddChaild(child);
 			}
+			ChangesUnsaved.Visible = true;
 		}
 		else if (is_click)
 		{
@@ -394,6 +408,7 @@ public partial class Main : Node2D
 			streamWriter.WriteLine("}");
 		}
 		streamWriter.WriteLine("}");
+		ChangesUnsaved.Visible = false;
     }
 
 	private void Open()
@@ -446,6 +461,7 @@ public partial class Main : Node2D
 				parent.AddChaild(child);
 			}
 		}
+		ChangesUnsaved.Visible = false;
 	}
 
 	private void Reset()
@@ -466,5 +482,28 @@ public partial class Main : Node2D
 	{
 		worldContextMenu.Visible = false;
 		OS.ShellOpen(OS.GetUserDataDir());
+	}
+
+	public void OnClickNew()
+	{
+		worldContextMenu.Visible = false;
+		if (ChangesUnsaved.Visible)
+		{
+			DiscardUnsavedDialog.PopupCentered();
+			return;
+		}
+		New();
+	}
+
+	private void New()
+	{
+		Reset();
+		GlobalStates.FileName = null;
+		ChangesUnsaved.Visible = false;
+	}
+
+	public void OnDiscardUnsavedDialogConfirmed()
+	{
+		New();
 	}
 }

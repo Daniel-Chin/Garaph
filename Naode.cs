@@ -88,6 +88,7 @@ public partial class Naode : Node2D
 			return;
 		}
 		bautton.Text = text;
+		Main.Singleton.ChangesUnsaved.Visible = true;
 	}
 
 	public override void _Process(double delta)

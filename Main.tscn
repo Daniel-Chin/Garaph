@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://1nsg0xfud1mc"]
+[gd_scene load_steps=11 format=3 uid="uid://1nsg0xfud1mc"]
 
 [ext_resource type="Script" path="res://Main.cs" id="1_dc132"]
 [ext_resource type="Script" path="res://Camera.cs" id="2_ppqa5"]
@@ -15,13 +15,21 @@ keycode = 83
 [sub_resource type="Shortcut" id="Shortcut_1gj0q"]
 events = [SubResource("InputEventKey_o0gut")]
 
-[sub_resource type="InputEventKey" id="InputEventKey_d0pg1"]
+[sub_resource type="InputEventKey" id="InputEventKey_keyc6"]
 device = -1
 ctrl_pressed = true
 keycode = 79
 
+[sub_resource type="Shortcut" id="Shortcut_h5xxh"]
+events = [SubResource("InputEventKey_keyc6")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_5up5q"]
+device = -1
+ctrl_pressed = true
+keycode = 78
+
 [sub_resource type="Shortcut" id="Shortcut_8ea2e"]
-events = [SubResource("InputEventKey_d0pg1")]
+events = [SubResource("InputEventKey_5up5q")]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_dc132")
@@ -33,7 +41,7 @@ script = ExtResource("2_ppqa5")
 [node name="World" type="Node2D" parent="."]
 
 [node name="WorldContextMenu" type="Node2D" parent="."]
-position = Vector2(202, 81)
+position = Vector2(412, 79)
 
 [node name="Right" type="PanelContainer" parent="WorldContextMenu"]
 offset_right = 190.0
@@ -90,8 +98,13 @@ text = "Save (Ctrl+S)"
 
 [node name="Open" type="Button" parent="WorldContextMenu/Left/Margin/VBox"]
 layout_mode = 2
-shortcut = SubResource("Shortcut_8ea2e")
+shortcut = SubResource("Shortcut_h5xxh")
 text = "Open (Ctrl+O)"
+
+[node name="New" type="Button" parent="WorldContextMenu/Left/Margin/VBox"]
+layout_mode = 2
+shortcut = SubResource("Shortcut_8ea2e")
+text = "New (Ctrl+N)"
 
 [node name="UserData" type="Button" parent="WorldContextMenu/Left/Margin/VBox"]
 layout_mode = 2
@@ -120,15 +133,34 @@ layout_mode = 2
 text = "Delete"
 
 [node name="FileDialog" type="FileDialog" parent="."]
+position = Vector2i(-1000, 0)
 size = Vector2i(900, 500)
+theme = ExtResource("3_5tpxd")
 access = 1
 filters = PackedStringArray("*.garaph ; Garaphs")
+
+[node name="ChangesUnsaved" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 22.3333
+theme = ExtResource("3_5tpxd")
+theme_override_font_sizes/font_size = 18
+text = "* Changes unsaved. "
+
+[node name="DiscardUnsavedDialog" type="ConfirmationDialog" parent="."]
+position = Vector2i(0, -300)
+size = Vector2i(956, 139)
+theme = ExtResource("3_5tpxd")
+ok_button_text = "Yes, discard"
+dialog_text = "There are changes unsaved. Discard them to proceed?"
+dialog_autowrap = true
 
 [connection signal="pressed" from="WorldContextMenu/Right/Margin/VBox/NewState" to="." method="OnClickNewState"]
 [connection signal="pressed" from="WorldContextMenu/Right/Margin/VBox/NewProp" to="." method="OnClickNewProp"]
 [connection signal="pressed" from="WorldContextMenu/Right/Margin/VBox/NewTag" to="." method="OnClickNewTag"]
 [connection signal="pressed" from="WorldContextMenu/Left/Margin/VBox/Save" to="." method="OnClickSave"]
 [connection signal="pressed" from="WorldContextMenu/Left/Margin/VBox/Open" to="." method="OnClickOpen"]
+[connection signal="pressed" from="WorldContextMenu/Left/Margin/VBox/New" to="." method="OnClickNew"]
 [connection signal="pressed" from="WorldContextMenu/Left/Margin/VBox/UserData" to="." method="OnClickViewUserDataDir"]
 [connection signal="pressed" from="NaodeContextMenu/Margin/VBox/Delete" to="." method="OnClickDelete"]
 [connection signal="file_selected" from="FileDialog" to="." method="OnFileSelected"]
+[connection signal="confirmed" from="DiscardUnsavedDialog" to="." method="OnDiscardUnsavedDialogConfirmed"]
