@@ -7,7 +7,7 @@ public partial class FreeArrow : Line2D
     static FreeArrow()
     {
         GRADIENT = new Gradient();
-        GRADIENT.AddPoint(0f, new Color(1f, 1f, 1f));
+        GRADIENT.AddPoint(0f, new Color(0f, 1f, 1f));
         GRADIENT.AddPoint(1f, new Color(0f, 1f, 0f));
     }
 

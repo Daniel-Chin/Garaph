@@ -19,16 +19,20 @@ public partial class Bautton : Button
     {
         if (@event is InputEventMouseButton eMB)
         {
+            Vector2 world_cursor = Main.Singleton.camera.GetWorldCursor();
             if (eMB.ButtonIndex == MouseButton.Right)
             {
                 if (eMB.Pressed)
                 {
                     GlobalStates.ArrowParent = id;
                     GlobalStates.ArrowChild = null;
+                    drag_start = world_cursor;
                 }
                 else 
                 {
-                    Main.Singleton.NaodeReleaseRMB(id);
+                    Main.Singleton.NaodeReleaseRMB(
+                        id, drag_start.DistanceTo(world_cursor) < 10
+                    );
                 }
                 GetViewport().SetInputAsHandled();
             }
@@ -36,7 +40,6 @@ public partial class Bautton : Button
                 eMB.ButtonIndex == MouseButton.Left
             )
             {
-                Vector2 world_cursor = Main.Singleton.camera.GetWorldCursor();
                 if (eMB.Pressed)
                 {
                     GlobalStates.DraggedId = id;
@@ -48,10 +51,9 @@ public partial class Bautton : Button
                     // release the focus. Somehow ReleaseFocus() would leave the button black??
                     Visible = false;
                     Visible = true;
-                    if (drag_start.DistanceTo(world_cursor) >= 10)
+                    if (drag_start.DistanceTo(world_cursor) < 10)
                     {
-                        // inhibit Pressed event
-                        GetViewport().SetInputAsHandled();
+                        Main.Singleton.Naodes[id].Select();
                     }
                 }
             }

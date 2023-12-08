@@ -59,7 +59,6 @@ public partial class Naode : Node2D
 
 	// public override void _Ready()
 	// {
-		bautton.Pressed += BauttonOnClick;
 		lineEdit.TextSubmitted += LineEditSubmit;
 		lineEdit.TextChanged += LineEditChange;
 
@@ -74,11 +73,6 @@ public partial class Naode : Node2D
 		lineEdit.ExpandToTextLength = true;
 
 		LineEditChange(Text);
-	}
-
-	public void BauttonOnClick()
-	{
-		Select();
 	}
 
 	public static void LineEditSubmit(string text)
@@ -143,6 +137,7 @@ public partial class Naode : Node2D
 	public void Select()
 	{
 		GlobalStates.SelectedId = Id;
+		Main.Singleton.NaodeContextMenu.Visible = false;
 		lineEdit.GrabFocus();
 	}
 }

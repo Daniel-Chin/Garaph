@@ -7,11 +7,11 @@ using System.Linq;
 public partial class Main : Node2D
 {
 	public static Main Singleton;
-	private readonly Dictionary<int, Naode> naodes = new();
+	public readonly Dictionary<int, Naode> Naodes = new();
 	public Camera camera;
 	private Node2D world;
 	private Node2D worldContextMenu;
-	private PanelContainer naodeContextMenu;
+	public PanelContainer NaodeContextMenu;
 	private FileDialog fileDialog;
 	private FreeArrow arrowPreview;
 	public Main()
@@ -23,11 +23,11 @@ public partial class Main : Node2D
 		camera = GetNode<Camera>("Camera");
 		world = GetNode<Node2D>("World");
 		worldContextMenu = GetNode<Node2D>("WorldContextMenu");
-		naodeContextMenu = GetNode<PanelContainer>("NaodeContextMenu");
+		NaodeContextMenu = GetNode<PanelContainer>("NaodeContextMenu");
 		fileDialog = GetNode<FileDialog>("FileDialog");
 
 		worldContextMenu.Visible = false;
-		naodeContextMenu.Visible = false;
+		NaodeContextMenu.Visible = false;
 
 		arrowPreview = new();
 		AddChild(arrowPreview);
@@ -56,20 +56,20 @@ public partial class Main : Node2D
 		for (int i = (accelerate ? 4 : 1) * N_MINI_STEPS; i >= 0; i--)
 		{
 			Vector2 center = Vector2.Zero;
-			foreach (Naode a in naodes.Values)
+			foreach (Naode a in Naodes.Values)
 			{
 				center += a.Position;
 			}
-			center /= naodes.Count;
+			center /= Naodes.Count;
 			Vector2 total_attract = Vector2.Zero;
-			foreach (Naode a in naodes.Values)
+			foreach (Naode a in Naodes.Values)
 			{
 				a.Force = Vector2.Zero;
 				// attract
 				Vector2 attract = 500.0f * (center - a.Position).Normalized();
 				total_attract += a.Force;
 				a.Force += attract;
-				foreach (Naode b in naodes.Values)
+				foreach (Naode b in Naodes.Values)
 				{
 					if (a == b)
 						continue;
@@ -123,9 +123,9 @@ public partial class Main : Node2D
 			}
 			if (center != Vector2.Zero)
 			{	// make sure attraction forces are balanced
-				naodes.Values.First().Force -= total_attract;
+				Naodes.Values.First().Force -= total_attract;
 			}
-			foreach (Naode a in naodes.Values)
+			foreach (Naode a in Naodes.Values)
 			{
 				a.Velocity += a.Force * (float) delta;
 				// sliding friction
@@ -164,7 +164,7 @@ public partial class Main : Node2D
 					a.Velocity = Vector2.Zero;
 				}
 			}
-			foreach (Naode a in naodes.Values)
+			foreach (Naode a in Naodes.Values)
 			{
 				if (
 					a.Id == GlobalStates.ArrowChild ||
@@ -181,10 +181,10 @@ public partial class Main : Node2D
 		arrowPreview.ClearPoints();
 		if (GlobalStates.ArrowParent is int parent_id)
 		{
-			Naode parent = naodes[parent_id];
+			Naode parent = Naodes[parent_id];
 			if (GlobalStates.ArrowChild is int child_id)
 			{
-				Naode child = naodes[child_id];
+				Naode child = Naodes[child_id];
 				if (
 					parent.Chaildren.Contains(child) ||
 					child.Chaildren.Contains(parent)
@@ -214,7 +214,7 @@ public partial class Main : Node2D
 			{
 				case MouseButton.Left:
 					worldContextMenu.Visible = false;
-					naodeContextMenu.Visible = false;
+					NaodeContextMenu.Visible = false;
 					GlobalStates.SelectedId = null;
 					break;
 				case MouseButton.Right:
@@ -240,7 +240,7 @@ public partial class Main : Node2D
 			GlobalStates.NextId, type
 		);
 		GlobalStates.NextId ++;
-		naodes.Add(naode.Id, naode);
+		Naodes.Add(naode.Id, naode);
 		world.AddChild(naode);
 		naode.Select();
 		return naode;
@@ -248,7 +248,7 @@ public partial class Main : Node2D
 
 	private void RemoveNoade(Naode naode)
 	{
-		Shared.Assert(naodes.Remove(naode.Id));
+		Shared.Assert(Naodes.Remove(naode.Id));
 		naode.QFree();
 	}
 	
@@ -277,19 +277,19 @@ public partial class Main : Node2D
 	{
 		if (GlobalStates.SelectedId is int id)
 		{
-			Naode naode = naodes[id];
+			Naode naode = Naodes[id];
 			RemoveNoade(naode);
 		}
-		naodeContextMenu.Visible = false;
+		NaodeContextMenu.Visible = false;
 	}
 
-	public void NaodeReleaseRMB(int id)
+	public void NaodeReleaseRMB(int id, bool is_click)
 	{
 		if (GlobalStates.ArrowChild is int child_id)
 		{
 			int parent_id = GlobalStates.ArrowParent ?? throw new Shared.FatalError();
-			Naode parent = naodes[parent_id];
-			Naode child = naodes[child_id];
+			Naode parent = Naodes[parent_id];
+			Naode child = Naodes[child_id];
 			if (parent.Chaildren.Contains(child))
 			{
 				parent.RemoveChaild(child);
@@ -303,11 +303,11 @@ public partial class Main : Node2D
 				parent.AddChaild(child);
 			}
 		}
-		else
+		else if (is_click)
 		{
 			GlobalStates.SelectedId = id;
-			naodeContextMenu.Visible = true;
-			naodeContextMenu.Position = camera.GetWorldCursor();
+			NaodeContextMenu.Visible = true;
+			NaodeContextMenu.Position = camera.GetWorldCursor();
 		}
 		GlobalStates.ArrowParent = null;
 		GlobalStates.ArrowChild = null;
@@ -315,7 +315,7 @@ public partial class Main : Node2D
 
 	public void DragNaode(int id, Vector2 relative)
 	{
-		Naode naode = naodes[id];
+		Naode naode = Naodes[id];
 		naode.Position += relative;
 	}
 
@@ -365,7 +365,7 @@ public partial class Main : Node2D
 		streamWriter.WriteLine("camera zoom = ");
 		streamWriter.WriteLine(camera.Zoom.X);
 		streamWriter.WriteLine("naodes {");
-		foreach (var (id, naode) in naodes)
+		foreach (var (id, naode) in Naodes)
 		{
 			streamWriter.WriteLine("id = ");
 			streamWriter.WriteLine(id);
@@ -382,7 +382,7 @@ public partial class Main : Node2D
 		}
 		streamWriter.WriteLine("}");
 		streamWriter.WriteLine("arrows {");
-		foreach (var (id, naode) in naodes)
+		foreach (var (id, naode) in Naodes)
 		{
 			streamWriter.WriteLine("paarent = ");
 			streamWriter.WriteLine(id);
@@ -420,7 +420,7 @@ public partial class Main : Node2D
 			Naode.EnumType type = Naode.Str2Type(streamReader.ReadLine());
 			SkipLine();
 			Naode naode = new(id, type);
-			naodes.Add(naode.Id, naode);
+			Naodes.Add(naode.Id, naode);
 			world.AddChild(naode);
 			naode.Text = streamReader.ReadLine();
 			SkipLine();
@@ -434,7 +434,7 @@ public partial class Main : Node2D
 		while (streamReader.ReadLine() != "}")
 		{
 			int parent_id = int.Parse(streamReader.ReadLine());
-			Naode parent = naodes[parent_id];
+			Naode parent = Naodes[parent_id];
 			SkipLine();
 			while (true)
 			{
@@ -442,7 +442,7 @@ public partial class Main : Node2D
 				if (line == "}")
 					break;
 				int child_id = int.Parse(line);
-				Naode child = naodes[child_id];
+				Naode child = Naodes[child_id];
 				parent.AddChaild(child);
 			}
 		}
@@ -450,7 +450,7 @@ public partial class Main : Node2D
 
 	private void Reset()
 	{
-		foreach (Naode naode in naodes.Values.ToArray())
+		foreach (Naode naode in Naodes.Values.ToArray())
 		{
 			RemoveNoade(naode);
 		}
