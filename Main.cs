@@ -395,10 +395,11 @@ public partial class Main : Node2D
 			streamWriter.WriteLine("text = ");
 			streamWriter.WriteLine(naode.Text);
 			Vector2 position = naode.Position - camera.Position;
+			// round, in case users git the save files
 			streamWriter.WriteLine("position.x = ");
-			streamWriter.WriteLine(position.X);
+			streamWriter.WriteLine((int) Math.Round(position.X / 10) * 10);
 			streamWriter.WriteLine("position.y = ");
-			streamWriter.WriteLine(position.Y);
+			streamWriter.WriteLine((int) Math.Round(position.Y / 10) * 10);
 			streamWriter.WriteLine();
 		}
 		streamWriter.WriteLine("}");
