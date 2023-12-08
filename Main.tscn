@@ -68,7 +68,7 @@ layout_mode = 2
 
 [node name="NewState" type="Button" parent="SubViewportContainer/World/GroundContextMenu/Right/Margin/VBox"]
 layout_mode = 2
-text = "New State"
+text = " New State "
 
 [node name="NewProp" type="Button" parent="SubViewportContainer/World/GroundContextMenu/Right/Margin/VBox"]
 layout_mode = 2
@@ -115,7 +115,7 @@ text = "New (Ctrl+N)"
 
 [node name="UserData" type="Button" parent="SubViewportContainer/World/GroundContextMenu/Left/Margin/VBox"]
 layout_mode = 2
-text = "View User Data Dir"
+text = " View User Data Dir "
 
 [node name="NaodeContextMenu" type="PanelContainer" parent="SubViewportContainer/World"]
 offset_left = 821.0
@@ -137,7 +137,7 @@ layout_mode = 2
 
 [node name="Delete" type="Button" parent="SubViewportContainer/World/NaodeContextMenu/Margin/VBox"]
 layout_mode = 2
-text = "Delete"
+text = " Delete "
 
 [node name="FileDialog" type="FileDialog" parent="."]
 position = Vector2i(-1000, 0)
