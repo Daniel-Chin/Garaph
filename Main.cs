@@ -162,7 +162,7 @@ public partial class Main : Node2D
 					if (v_mag != 0.0f)
 					{
 						Vector2 direction = a.Velocity / v_mag;
-						v_mag = Math.Min(v_mag, 100.0f);
+						v_mag = Math.Min(v_mag, 10.0f);
 						a.Velocity = direction * v_mag;
 					}
 				}
