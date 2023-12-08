@@ -39,6 +39,8 @@ public partial class Main : Node2D
 		arrowPreview = new();
 		ground.AddChild(arrowPreview);
 
+		CLI();
+
 		// test
 		// Naode a = NewNoade(Naode.EnumType.STATE);
 		// a.Text = "State A";
@@ -527,5 +529,32 @@ public partial class Main : Node2D
 	{
 		groundContextMenu.Visible = false;
 		confirmIfUnsaved(() => GetTree().Quit());
+	}
+
+	private void CLI()
+	{
+		string[] args = OS.GetCmdlineArgs();
+		GD.PrintRaw("Command line args: [");
+		foreach (string arg in args)
+		{
+			GD.PrintRaw(arg);
+		}
+		GD.Print(']');
+		switch (args.Length)
+		{
+			case 0:
+				return;
+			case 1:
+				if (args[0].StartsWith("res://"))
+					break;	// running from Godot editor
+				GlobalStates.FileName = args[0];
+				Open();
+				fileDialog.CurrentDir = Path.GetDirectoryName(
+					args[0]
+				);
+				break;
+			default:
+				throw new Shared.FatalError();
+		}
 	}
 }
