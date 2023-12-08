@@ -26,12 +26,6 @@ public partial class Camera : Camera2D
 
 	private void Move(double delta)
 	{
-		// if (
-		// 	GlobalStates.SelectedId != null ||
-		// 	Main.Singleton.IsDialogOpen()
-		// )
-		// 	return;
-		
 		is_A_down &= Input.IsKeyPressed(Key.A);
 		is_D_down &= Input.IsKeyPressed(Key.D);
 		is_W_down &= Input.IsKeyPressed(Key.W);

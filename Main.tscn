@@ -119,6 +119,10 @@ text = "New (Ctrl+N)"
 layout_mode = 2
 text = " View User Data Dir "
 
+[node name="Exit" type="Button" parent="SubViewportContainer/World/GroundContextMenu/Left/Margin/VBox"]
+layout_mode = 2
+text = "Exit (Alt+F4)"
+
 [node name="NaodeContextMenu" type="PanelContainer" parent="SubViewportContainer/World"]
 offset_left = 821.0
 offset_top = 509.0
@@ -160,7 +164,7 @@ position = Vector2i(0, -300)
 size = Vector2i(956, 139)
 theme = ExtResource("3_5tpxd")
 ok_button_text = "Yes, discard"
-dialog_text = "There are changes unsaved. Discard them to proceed?"
+dialog_text = "There are changes unsaved. Discard the changes to proceed?"
 dialog_autowrap = true
 
 [connection signal="pressed" from="SubViewportContainer/World/GroundContextMenu/Right/Margin/VBox/NewState" to="." method="OnClickNewState"]
@@ -170,6 +174,7 @@ dialog_autowrap = true
 [connection signal="pressed" from="SubViewportContainer/World/GroundContextMenu/Left/Margin/VBox/Open" to="." method="OnClickOpen"]
 [connection signal="pressed" from="SubViewportContainer/World/GroundContextMenu/Left/Margin/VBox/New" to="." method="OnClickNew"]
 [connection signal="pressed" from="SubViewportContainer/World/GroundContextMenu/Left/Margin/VBox/UserData" to="." method="OnClickViewUserDataDir"]
+[connection signal="pressed" from="SubViewportContainer/World/GroundContextMenu/Left/Margin/VBox/Exit" to="." method="OnClickExit"]
 [connection signal="pressed" from="SubViewportContainer/World/NaodeContextMenu/Margin/VBox/Delete" to="." method="OnClickDelete"]
 [connection signal="file_selected" from="FileDialog" to="." method="OnFileSelected"]
 [connection signal="confirmed" from="DiscardUnsavedDialog" to="." method="OnDiscardUnsavedDialogConfirmed"]

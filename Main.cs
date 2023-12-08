@@ -16,6 +16,7 @@ public partial class Main : Node2D
 	private FreeArrow arrowPreview;
 	public Label ChangesUnsaved;
 	private ConfirmationDialog DiscardUnsavedDialog;
+	private Action action_posponed_by_dialog = null;
 	public Main()
 	{
 		Singleton = this;
@@ -237,10 +238,12 @@ public partial class Main : Node2D
 		}
 		else if (@event is InputEventKey iEK)
 		{
-			if (iEK.Keycode == Key.Ctrl)
+			switch (iEK.Keycode)
 			{
-				groundContextMenu.Visible = iEK.Pressed;
-				groundContextMenu.Position = camera.GetWorldCursor();
+				case Key.Ctrl:
+					groundContextMenu.Visible = iEK.Pressed;
+					groundContextMenu.Position = camera.GetWorldCursor();
+					break;
 			}
 		}
 		base._UnhandledInput(@event);
@@ -349,8 +352,11 @@ public partial class Main : Node2D
 	public void OnClickOpen()
 	{
 		groundContextMenu.Visible = false;
-		fileDialog.FileMode = FileDialog.FileModeEnum.OpenFile;
-		fileDialog.PopupCentered();
+		confirmIfUnsaved(() => 
+		{
+			fileDialog.FileMode = FileDialog.FileModeEnum.OpenFile;
+			fileDialog.PopupCentered();
+		});
 	}
 
 	public void OnFileSelected(string path)
@@ -485,15 +491,22 @@ public partial class Main : Node2D
 		OS.ShellOpen(OS.GetUserDataDir());
 	}
 
-	public void OnClickNew()
+	private void confirmIfUnsaved(Action action)
 	{
-		groundContextMenu.Visible = false;
+		action_posponed_by_dialog = action;
 		if (ChangesUnsaved.Visible)
 		{
 			DiscardUnsavedDialog.PopupCentered();
 			return;
 		}
-		New();
+		action_posponed_by_dialog();
+		action_posponed_by_dialog = null;
+	}
+
+	public void OnClickNew()
+	{
+		groundContextMenu.Visible = false;
+		confirmIfUnsaved(New);
 	}
 
 	private void New()
@@ -505,6 +518,13 @@ public partial class Main : Node2D
 
 	public void OnDiscardUnsavedDialogConfirmed()
 	{
-		New();
+		action_posponed_by_dialog();
+		action_posponed_by_dialog = null;
+	}
+
+	public void OnClickExit()
+	{
+		groundContextMenu.Visible = false;
+		confirmIfUnsaved(() => GetTree().Quit());
 	}
 }
