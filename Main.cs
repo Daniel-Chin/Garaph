@@ -39,6 +39,8 @@ public partial class Main : Node2D
 		arrowPreview = new();
 		ground.AddChild(arrowPreview);
 
+		GetTree().AutoAcceptQuit = false;
+
 		// CLI(null);
 		CLI(new string[] { "C:/Users/iGlop/d/Flute/software/react_design.garaph" });
 
@@ -558,4 +560,12 @@ public partial class Main : Node2D
 				throw new Shared.FatalError();
 		}
 	}
+
+    public override void _Notification(int what)
+    {
+		if (what == NotificationWMCloseRequest)
+		{
+			OnClickExit();
+		}
+    }
 }
