@@ -9,6 +9,10 @@ public partial class Camera : Camera2D
 	private float move_speed_normed;
 
 	private bool is_dragging = false;
+	private bool is_W_down = false;
+	private bool is_A_down = false;
+	private bool is_S_down = false;
+	private bool is_D_down = false;
 	public override void _Ready()
 	{
 		Vector2 size = GetViewportRect().Size;
@@ -20,28 +24,33 @@ public partial class Camera : Camera2D
 		Move(delta);
 	}
 
-	private void Move (double delta)
+	private void Move(double delta)
 	{
-		if (
-			GlobalStates.SelectedId != null ||
-			Main.Singleton.IsDialogOpen()
-		)
-			return;
+		// if (
+		// 	GlobalStates.SelectedId != null ||
+		// 	Main.Singleton.IsDialogOpen()
+		// )
+		// 	return;
 		
+		is_A_down &= Input.IsKeyPressed(Key.A);
+		is_D_down &= Input.IsKeyPressed(Key.D);
+		is_W_down &= Input.IsKeyPressed(Key.W);
+		is_S_down &= Input.IsKeyPressed(Key.S);
+
 		Vector2 velocity = Vector2.Zero;
-		if (Input.IsKeyPressed(Key.A))
+		if (is_A_down)
 		{
 			velocity += new Vector2(-move_speed_normed, 0f);
 		}
-		if (Input.IsKeyPressed(Key.D))
+		if (is_D_down)
 		{
 			velocity += new Vector2(+move_speed_normed, 0f);
 		}
-		if (Input.IsKeyPressed(Key.W))
+		if (is_W_down)
 		{
 			velocity += new Vector2(0f, -move_speed_normed);
 		}
-		if (Input.IsKeyPressed(Key.S))
+		if (is_S_down)
 		{
 			velocity += new Vector2(0f, +move_speed_normed);
 		}
@@ -73,6 +82,24 @@ public partial class Camera : Camera2D
 			{
 				Position -= eMM.Relative / Zoom;
 				GetViewport().SetInputAsHandled();
+			}
+		}
+		else if (@event is InputEventKey eK)
+		{
+			switch (eK.Keycode)
+			{
+				case Key.W:
+					is_W_down = eK.Pressed;
+					break;
+				case Key.A:
+					is_A_down = eK.Pressed;
+					break;
+				case Key.S:
+					is_S_down = eK.Pressed;
+					break;
+				case Key.D:
+					is_D_down = eK.Pressed;
+					break;
 			}
 		}
 		base._UnhandledInput(@event);

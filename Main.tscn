@@ -39,7 +39,9 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="World" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
 size = Vector2i(1920, 1080)
+render_target_update_mode = 4
 
 [node name="Camera" type="Camera2D" parent="SubViewportContainer/World"]
 anchor_mode = 0
@@ -140,10 +142,10 @@ layout_mode = 2
 text = " Delete "
 
 [node name="FileDialog" type="FileDialog" parent="."]
-position = Vector2i(-1000, 0)
-size = Vector2i(900, 500)
+position = Vector2i(-1400, 0)
+size = Vector2i(1300, 900)
 theme = ExtResource("3_5tpxd")
-access = 1
+access = 2
 filters = PackedStringArray("*.garaph ; Garaphs")
 
 [node name="ChangesUnsaved" type="Label" parent="."]

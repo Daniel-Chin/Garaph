@@ -33,6 +33,7 @@ public partial class Main : Node2D
 		groundContextMenu.Visible = false;
 		NaodeContextMenu.Visible = false;
 		ChangesUnsaved.Visible = false;
+		fileDialog.CurrentDir = OS.GetUserDataDir();
 
 		arrowPreview = new();
 		ground.AddChild(arrowPreview);
