@@ -41,8 +41,8 @@ public partial class Main : Node2D
 
 		GetTree().AutoAcceptQuit = false;
 
-		// CLI(null);
-		CLI(new string[] { "C:/Users/iGlop/d/Flute/software/react_design.garaph" });
+		CLI(null);
+		// CLI(new string[] { "C:/Users/iGlop/d/Flute/software/react_design.garaph" });
 
 		// test
 		// Naode a = NewNoade(Naode.EnumType.STATE);
