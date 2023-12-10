@@ -431,7 +431,8 @@ public partial class Main : Node2D
 		{
 			streamReader.ReadLine();
 		}
-		SkipLine();
+		if (streamReader.ReadLine() == null)
+			return;	// empty file
 		Shared.Assert(int.Parse(streamReader.ReadLine()) == 1);
 		SkipLine();
 		GlobalStates.NextId = int.Parse(streamReader.ReadLine());
