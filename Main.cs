@@ -206,14 +206,12 @@ public partial class Main : Node2D
 				}
 				else
 				{
-					arrowPreview.AddPoint(parent.Center());
-					arrowPreview.AddPoint(child .Center());
+					arrowPreview.Link(parent, child);
 				}
 			}
 			else 
 			{
-				arrowPreview.AddPoint(parent.Center());
-				arrowPreview.AddPoint(camera.GetWorldCursor());
+				arrowPreview.Link(parent, camera.GetWorldCursor());
 			}
 		}
 	}

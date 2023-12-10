@@ -143,4 +143,30 @@ public partial class Naode : Node2D
 	}
 
 	public Vector2 Center() => Position + 0.5f * Size;
+
+    public Vector2 IntersectEdge(Vector2 other)
+    {
+		Vector2 direction = (other - Center()).Normalized();
+		Vector2 half = Size / 2;
+		Vector2	corners = direction.Sign() * half;
+		Vector2 relative()
+		{
+			if (direction.X == 0.0f)
+				return new Vector2(0.0f, corners.Y);
+			if (direction.Abs().Aspect() < Size.Aspect())
+			{
+				return new Vector2(
+					corners.Y * direction.Aspect(),
+					corners.Y
+				);
+			}
+			else
+			{
+				return new Vector2(
+					corners.X, corners.X / direction.Aspect()
+				);
+			}
+		}
+		return Center() + relative();
+    }
 }

@@ -18,6 +18,20 @@ public partial class FreeArrow : Line2D
         ZIndex = -1;
         Gradient = GRADIENT;
     }
+
+    public void Link(Naode a, Vector2 b)
+    {
+        ClearPoints();
+        AddPoint(a.IntersectEdge(b));
+        AddPoint(b);
+    }
+
+    public void Link(Naode a, Naode b)
+    {
+        ClearPoints();
+        AddPoint(a.IntersectEdge(b.Center()));
+        AddPoint(b.IntersectEdge(a.Center()));
+    }
 }
 public partial class Arrow : FreeArrow
 {
@@ -34,9 +48,7 @@ public partial class Arrow : FreeArrow
 
     public override void _Process(double delta)
     {
-        ClearPoints();
-        AddPoint(parent.Center());
-        AddPoint(child.Center());
+        Link(parent, child);
         if (
             GlobalStates.ArrowParent == parent.Id &&
             GlobalStates.ArrowChild == child.Id ||
